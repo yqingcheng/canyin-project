@@ -1,0 +1,300 @@
+<style lang="scss">
+    @font-face {font-family: "iconfont";
+        src: url('data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAAiEAAsAAAAADDgAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAADMAAABCsP6z7U9TLzIAAAE8AAAARAAAAFZW7ki5Y21hcAAAAYAAAABwAAABsgNC1K5nbHlmAAAB8AAABHAAAAXAY8NOJ2hlYWQAAAZgAAAALgAAADYRMUf1aGhlYQAABpAAAAAcAAAAJAfeA4ZobXR4AAAGrAAAABMAAAAUE+kAAGxvY2EAAAbAAAAADAAAAAwCDgPQbWF4cAAABswAAAAfAAAAIAEbAONuYW1lAAAG7AAAAUUAAAJtPlT+fXBvc3QAAAg0AAAATQAAAGCM/NcbeJxjYGRgYOBikGPQYWB0cfMJYeBgYGGAAJAMY05meiJQDMoDyrGAaQ4gZoOIAgCKIwNPAHicY2Bk/s04gYGVgYOpk+kMAwNDP4RmfM1gxMjBwMDEwMrMgBUEpLmmMDgwVDw7w9zwv4EhhrmBoQEozAiSAwAzeQ07eJzFkLENgDAMBM8EEEKMwhBUTENFlQXpmMNrwCemgAl46yL7ZcuRgQ5IYhYt2I5RtMm16ifG6rcsqkcGGkX21Q8/r0veOw+Z+iJK3mhWO6znN9l/q7+a6rs8lS5OftAXfQ10MfwISo+fAekGdvMauHicVVNNbBtFFJ43uzuzu95dr/fXu05ie13vJLXr1BvHrlPFlmgQJKkE4kdKe6iEhEAcCIIeyoFDhITUA0Jw4AI3hEQrcaDiAiVClRD0AgeQQBwDVFw4wqWoNbxJIIjVzJv33rfzZt437xGNkL9+UvaVKvHJIumTDfIoIcA6kDl0Hppi0KMdCJtaGAeOIlqiyVtZT1mHOGNBVAwHecw4K4MDC7DSLIaiRwWsDib0LBTRPEBSSx/32nOe8iaYVbHw2myLvgdhvTVXnpyabXanQdHw9SuW5yWe97rONE2nVC078HwcGZphstn7WjkN9+tLtA5WItLzF+xGzXvq6mB3vh0bAHt74NcazgfTSlrB8Uoa+V7CXVuvpnbrRABX7pSqvjWf/0Lw45jrl8pNZUwMzLZBTpEHySbZwnx7cJTOiGf5YFhEAWv5DvAFiCcw6oGo4EQNbfT6OQtxyUUPOIvio5+G+TKsrLZCeAuK7X5/u4CdpNEoGo3k9v5dTbu7/5mUn10/UNWD69cONO3g2leOZV7aKBb5nF4x6NxDi09ecShzd2/cgB/bRbFdFPlas9/EAe8eB8Bg9z7FzceBYBtC+sATFBJmUXMOqgnQ5x5TqtoL3S7mzDDnPeW2skfKpE6WyZQ8Qi4T0o4CDiwT/XwwgmERV1AH1PuoA2IKMtDM8tX+YIjPii/5fzvkgSyRQ1u+dAhNZKSCVGgTGOStdpaLCrLSRE/lkFhkULnF+exX5nHGIOUVjgNNxj1p8juWOXvJtCwT3pDyP/0729iX+r5hw9r9l89sUrp5Bp42bcuYvdM+DXC6Ta/iavsW0M1bh1G5DC6jzm5zfnSY9Fa4QgzbNuT8QwoZ944U0qDf0q3RfTbaAgDLt6F/gv55og+4zjqHl/l+tEUsWUjKzwolCWlhx5wiBZmQ8+QieZt8Qb4hP2A1NSURTWSxKUvnHxpCZHgdC01IpsJ2PiiC+Fggawsgu6gHI8HjyAEsp5F0xiORTyCqA5dgO+YsQB07TuSsTFm2THsgDSE3DAdSTCGOhlM6rFPsyVEcxREXnCGeyxOWgeEBQRkkEI+GGDqawgTqMMSjBlPIeQ9kD2CpC/mYsjOUF+99DVkNfguCWdgdUzru0k+6awAC0H3/4VoG9NlAnPTFyUDMuppbVpVnNNdVlGQ00lDRzp2T5k201LKrbmyorqPQDXWJMaHaqb5uekpoJoPEDhTPnOq2aTF1kfNF1akhWFGjUlFY4b/YsiXSk7pVrztGp9p29NR1U01RNW0p6Ry7LbPqOin7qDse74wB1jq1LBtmGU1nO3hfefW1Ll3qIjTu3vD9CzsperN0ZwUEYkfzd13Ry/rHXOUV/cOLl3TX1PTLu9J569JF3TVUvnsZQffV0ooe6svmUt00acmYUMboxChRUy97fmT2EeyXRKabYJrr1DDoWbOkI1YBT6Vp3EYa4lRlXlT3V4K6xbjBmZJWBWNL1URlfjTv94OG+Tms7YzH3c7ZRchWW63V7G8UvOHzeJxjYGRgYADizvJKrnh+m68M3CwMIHCdk/EPgv7fwMLA3ADkcjAwgUQB/+oI/gAAeJxjYGRgYG7438AQw8IAAkCSkQEVsAIARwsCbnicY2FgYGB+ycDAwoDAAA6bAP0AAAAAAAB2APABmALgeJxjYGRgYGBluM7AwwACTEDMBYQMDP/BfAYAHuQB/wB4nGWPTU7DMBCFX/oHpBKqqGCH5AViASj9EatuWFRq911036ZOmyqJI8et1ANwHo7ACTgC3IA78EgnmzaWx9+8eWNPANzgBx6O3y33kT1cMjtyDRe4F65TfxBukF+Em2jjVbhF/U3YxzOmwm10YXmD17hi9oR3YQ8dfAjXcI1P4Tr1L+EG+Vu4iTv8CrfQ8erCPuZeV7iNRy/2x1YvnF6p5UHFockikzm/gple75KFrdLqnGtbxCZTg6BfSVOdaVvdU+zXQ+ciFVmTqgmrOkmMyq3Z6tAFG+fyUa8XiR6EJuVYY/62xgKOcQWFJQ6MMUIYZIjK6Og7VWb0r7FDwl57Vj3N53RbFNT/c4UBAvTPXFO6stJ5Ok+BPV8bUnV0K27LnpQ0kV7NSRKyQl7WtlRC6gE2ZVeOEXpc0Yk/KGdI/wAJWm7IAAAAeJxjYGKAAC4G7ICVkYmRmZGFkZWRjYGxgiMpMzG/MDMvXSozOT8vLT+vpCojs6o0HyRclVGaZ2BkZsSVnZiZlliVkZ+XzsAAAPHUEm8AAAA=') format('truetype');
+    }
+
+    .iconfont {
+        font-family:"iconfont" !important;
+        font-size:16px;
+        font-style:normal;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .icon-biaoqing:before { content: "\e646"; }
+
+    .icon-iconfontzhizuobiaozhun0262:before { content: "\e6cc"; }
+
+    .icon-kaifazhong:before { content: "\e6c5"; }
+    page{
+        height: 100%;
+    }
+    .me{
+        width: 100%;
+        height: 100%;
+        background: #3e3e46;
+        overflow: hidden;
+        &_img{
+            width: 200rpx;
+            height: 200rpx;
+            border-radius: 200rpx;
+            margin: 195rpx auto 0 auto;
+            z-index: 999;
+            position: relative;
+            display: block;
+        }
+        &_content{
+            width: 100%;
+            height: 100%;
+            /*background: white;*/
+            margin-top: -65rpx;
+            /*border-radius: 50% 50% 0 0;*/
+            overflow: hidden;
+            &_circle{
+                width: 180%;
+                background: white;
+                height: 100%;
+                border-radius: 50%;
+                /*margin-left: */
+                transform: translateX(-22.5%);
+                overflow: hidden;
+                .user_name{
+                    text-align: center;
+                    margin-top: 65rpx;
+                    font-size: 30rpx;
+                    line-height: 55rpx;
+                }
+            }
+            .tabview{
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                height: 180rpx;
+                z-index: 999;
+                position: absolute;
+                top: 440rpx;
+                left: 0;
+                .tab{
+                    width: 25%;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    font-size: 27rpx;
+                    padding: 30rpx 0 ;
+                    box-sizing: border-box;
+                    view{
+                        margin-top: 20rpx;
+                    }
+                }
+            }
+            .tablist{
+                width: 100%;
+                z-index: 999;
+                position: absolute;
+                top: 620rpx;
+                left: 0;
+                .list{
+                    padding: 0 40rpx;
+                    height: 100rpx;
+                    border-top: 1px solid #ddd;
+                    border-bottom: 1px solid #ddd;
+                    box-sizing: border-box;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    &_vbloc{
+                        display: flex;
+                        flex-direction: row;
+                        font-size: 27rpx;
+                        line-height: 40rpx;
+                        view{
+                            margin-left: 25rpx;
+                        }
+                    }
+                }
+            }
+
+        }
+        .icon_size{
+            font-size: 188rpx;
+        }
+    }
+</style>
+
+<template>
+    <view class="me">
+        <image class="me_img" src="{{userInfo.avatarUrl}}"></image>
+        <view class="me_content">
+            <view class="me_content_circle">
+                <view class="user_name">
+                    {{userInfo.nickName}}
+                </view>
+            </view>
+            <view class="tabview">
+                <view class="tab" data-index="0" @tap="skipPayOrder" >
+                    <!--<image src=""></image>-->
+                    <icon1 type="daifukuan" color="#000" fontSize="60"></icon1>
+                    <view>未支付</view>
+                </view>
+                <view class="tab" data-index="1" @tap="skipPayOrder">
+                    <!--<image src=""></image>-->
+                    <icon2 type="daishouhuo" color="#000" fontSize="60"></icon2>
+                    <view>待配送</view>
+                </view>
+                <view class="tab" data-index="2" @tap="skipPayOrder">
+                    <!--<image src=""></image>-->
+                    <icon3 type="weishiyong" color="#000" fontSize="60"></icon3>
+                    <view>待收货</view>
+                </view>
+                <view class="tab" data-index="3" @tap="skipPayOrder">
+                    <!--<image src=""></image>-->
+                    <icon4 type="zhuanchu" color="#000" fontSize="60"></icon4>
+                    <view>已完成</view>
+                </view>
+            </view>
+
+            <view class="tablist">
+                <view class="list" @tap="myOrder">
+                    <view class="list_vbloc" >
+                        <icon5 type="icon-test" color="#000" fontSize="45"></icon5>
+                        <view>我的订单</view>
+                    </view>
+                    <view>
+                        >
+                    </view>
+                </view>
+                <!--<view class="list">-->
+                <!--<view class="list_vbloc">-->
+                <!--<icon6 type="xinxi" color="#000" fontSize="45"></icon6>-->
+                <!--<view>我的资料</view>-->
+                <!--</view>-->
+                <!--<view>-->
+                <!--&gt;-->
+                <!--</view>-->
+                <!--</view>-->
+                <view class="list" @tap="Collection">
+                    <view class="list_vbloc">
+                        <icon7 type="shoucang" coylor="#000" fontSize="45"></icon7>
+                        <view>我的收藏</view>
+                    </view>
+                    <view>
+                        >
+                    </view>
+                </view>
+                <!--<view class="list">-->
+                <!--<view class="list_vbloc">-->
+                <!--<icon8 type="icon-test" color="#000" fontSize="45"></icon8>-->
+                <!--<view>我的足迹</view>-->
+                <!--</view>-->
+                <!--<view>-->
+                <!--&gt;-->
+                <!--</view>-->
+                <!--</view>-->
+                <view class="list" @tap="myTracks">
+                    <view class="list_vbloc">
+                        <icon9 type="yuding" color="#000" fontSize="45"></icon9>
+                        <view>我的足迹</view>
+                    </view>
+                    <view>
+                        >
+                    </view>
+                </view>
+                <view class="list" @tap="zhuohao">
+                    <view class="list_vbloc">
+                        <icon10 type="tixing" color="#000" fontSize="45"></icon10>
+                        <view>桌号排队提醒</view>
+                    </view>
+                    <view>
+                        >
+                    </view>
+                </view>
+
+
+            </view>
+        </view>
+        <modal></modal>
+        <toast></toast>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import getExtJson from '../mixins/getExtJson'
+    import Icon from '../components/Icon'
+    import Modal from '../components/Modal'
+    import Toast from 'xnr-toast'
+
+
+    export default class Me extends wepy.page{
+        config = {
+            navigationBarTitleText: '个人中心'
+        }
+        data = {
+            userInfo: {}
+        }
+        components = {
+            icon1: Icon,
+            icon2: Icon,
+            icon3: Icon,
+            icon4: Icon,
+            icon5: Icon,
+//            icon6: Icon,
+            icon7: Icon,
+//            icon8: Icon,
+            icon9: Icon,
+            icon10: Icon,
+            modal: Modal,
+            toast: Toast
+        }
+        methods = {
+            zhuohao() {
+                this.$invoke("toast", "show", {
+                    title: '此功能待开发',
+                    imgClassName: "iconfont icon-kaifazhong icon_size"
+                })
+            },
+            /*
+            * 跳转到我的收藏
+            * */
+            Collection() {
+                wx.navigateTo({url: 'collection'})
+            },
+            /*
+            * 跳转到我的订单
+            * */
+            myOrder() {
+                wx.navigateTo({url: `memberInfo?index=4`})
+            },
+            /*
+            * 跳转到我的记录
+            * */
+            myTracks() {
+                wx.navigateTo({url: 'mytracks'})
+            },
+            skipPayOrder(e, index) {
+                wx.navigateTo({url: `memberInfo?index=${e.currentTarget.dataset.index}`})
+            }
+        }
+        onShareAppMessage() {
+
+        }
+        onLoad() {
+            getExtJson.call(this)
+            if(this.$parent.globalData.userInfo) {
+                this.userInfo = this.$parent.globalData.userInfo
+                this.$apply()
+            }
+            if(!wx.getStorageSync('openid')) {
+                this.$invoke('modal', 'show', {
+                    content: '您还没有授权登录',
+                    specialType: 'getUserInfo',
+                    specialText: '登录',
+                    showCancel: true,
+                    success: (res) => {
+                        if(res.confirm) {
+                            if(res.data.userInfo){
+                                this.$parent.getUserInfo( res => {
+                                    this.userInfo = res
+                                    this.$apply()
+                                })
+                            }
+                        }
+                    }
+                })
+            }
+
+        }
+    }
+</script>

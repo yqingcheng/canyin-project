@@ -1,0 +1,62 @@
+<style lang="scss">
+    .ScrollNav{
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 140rpx;
+        overflow-y:scroll;
+        width: 140rpx;
+        margin-right: 40rpx;
+        &_list{
+             width: 100%;
+             line-height: 95rpx;
+             text-align: center;
+             font-size: 30rpx;
+        }
+        &_hover{
+            width: 100%;
+            line-height: 95rpx;
+            text-align: center;
+            font-size: 30rpx;
+            color: red;
+        }
+    }
+</style>
+
+<template>
+    <view class="ScrollNav">
+        <view  @tap="selectedFn" wx:for="{{ScrollNav}}"
+              data-name="{{item.name}}" data-id="{{item.id}}" wx:key="{{index}}"
+              class="{{num == item.id ? 'ScrollNav_hover':'ScrollNav_list'}}">{{item.name}}</view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+
+    export default class ScrollNav extends wepy.component{
+        data = {
+            currentIndex: '',
+            ScrollName: ''
+        }
+        props = {
+            ScrollNav: {},
+            num: {}
+        }
+        methods = {
+            selectedFn(e) {
+                this.ScrollName = e.currentTarget.dataset.name
+                this.currentIndex = e.currentTarget.dataset.id
+                if(this.currentIndex !== this.num) {
+                    this.$emit('change', this.currentIndex, this.ScrollName)
+                }
+                this.num = e.currentTarget.dataset.id
+
+                this.$apply()
+            }
+        }
+        onLoad() {
+
+        }
+    }
+</script>

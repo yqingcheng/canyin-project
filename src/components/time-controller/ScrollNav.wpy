@@ -1,0 +1,119 @@
+<style lang="scss">
+    ::-webkit-scrollbar{
+        width: 0;
+        display: none;
+    }
+    .scroll_nav{
+        padding-bottom: 200rpx;
+        &_wrap{
+            height: 100%;
+        }
+        &_items{
+            height: 100rpx;
+            line-height: 100rpx;
+            text-align: center;
+            font-size: 30rpx;
+            color: #000;
+            position: relative;
+            &_active{
+                color: #ca0707;
+            }
+            .icon_wrap{
+                position: absolute;
+                right: 0; top: 0;
+                padding-right: 20rpx;
+            }
+            .icon_wrap_not{
+                display: none;
+            }
+        }
+
+    }
+</style>
+
+<template>
+    <scroll-view class="scroll_nav_wrap" style="background-color: {{bgColor}}" scroll-y="true" scroll-top="{{navScrollTop}}" scroll-with-animation="true">
+        <view class="scroll_nav">
+            <repeat for="{{navDeails}}">
+                <view 
+                    class="scroll_nav_items" 
+                    id="{{item.id}}"
+                    data-index="{{index}}" 
+                    data-value="{{item.value}}"
+                    @tap="selectedFn"
+                    style="{{index == defaultIndex ? selectedStyle : itemStyle}}"
+                >
+                    {{item.name}}
+                    <my-icon 
+                        class="icon_wrap {{index == defaultIndex ? '' : 'icon_wrap_not'}}"
+                        :type="iconOption.type" 
+                        :fontSize="iconOption.fontSize"
+                        :color="iconOption.color"
+                    ></my-icon>
+                </view>
+            </repeat>
+        </view>
+    </scroll-view>
+
+</template>
+
+<script>
+
+    import wepy from 'wepy'
+    import Icon from './Icon'
+
+    export default class ScrollNav extends wepy.component {
+        components = {
+            'my-icon': Icon
+        }
+        props = {
+            navDeails: {
+                type: Array,
+                coerce: (res) => res
+            },
+            defaultIndex:{
+                type: [Number, String],
+                coerce: (res) => +res,
+                default: 0
+            },
+            navScrollTop: {
+                type: [Number, String],
+                coerce: res => res
+            },
+            itemStyle: {
+                type: String,
+                coerce: res => res
+            },
+            selectedStyle: {
+                type: String,
+                coerce: res => res
+            },
+            iconOption: {
+                type: Object,
+                coerce: res => res
+            }
+        }
+        methods = {
+            selectedFn(e){
+                this.defaultIndex = e.currentTarget.dataset.index
+                if(this.oldIndex == this.defaultIndex) return 
+                this.selectedId = e.currentTarget.id
+                this.oldIndex = this.defaultIndex
+                this.$emit('change', {
+                    id: this.selectedId,
+                    index: this.defaultIndex, 
+                    value: e.currentTarget.dataset.value
+                })
+            }
+        }
+        onLoad(){
+            this.oldIndex = this.defaultIndex
+            this.$emit('change', {
+                id: this.navDeails[this.defaultIndex] && this.navDeails[this.defaultIndex].id,
+                index: this.defaultIndex, 
+                value: this.navDeails[this.defaultIndex] && this.navDeails[this.defaultIndex].value,
+            })
+        }
+    }
+</script>
+

@@ -1,0 +1,631 @@
+<style lang="scss">
+    page{
+        height: 100%;
+    }
+    .order{
+        width: 100%;
+        height: 100%;
+        background: #fbfbfb;
+        padding: 20rpx;
+        box-sizing: border-box;
+        .addres{
+            width: 100%;
+            border-radius: 20rpx;
+            background: #fff;
+            padding: 20rpx 15rpx 0 15rpx;
+            box-sizing: border-box;
+            margin-bottom: 20rpx;
+            font-size: 28rpx;
+            .time{
+                height: 90rpx;
+                width: 100%;
+                line-height: 90rpx;
+                display: flex;
+                .pless{
+                    margin: 0 185rpx 0 20rpx;
+                }
+                .time_houer{
+                    font-size: 30rpx;
+                    color: #373737;
+                }
+            }
+            .dizhi{
+                .xuanze{
+                    display: flex;
+                    .pless{
+                        margin: 0 0 0 20rpx;
+                    }
+                }
+                .user{
+                    margin-left: 54rpx;
+                    box-sizing: border-box;
+                    height: 140rpx;
+                    width: 100%;
+                    padding: 20rpx 0 15rpx 0;
+                    view:nth-child(1){
+                        line-height: 55rpx;
+                        color: 373737;
+                        font-size: 33rpx;
+                        font-weight: 600;
+                    }
+                    view:nth-child(2){
+                        line-height: 45rpx;
+                    }
+                }
+            }
+        }
+        &_shop{
+            width: 100%;
+            border-radius: 20rpx;
+            background: #fff;
+            padding: 20rpx 15rpx 0 15rpx;
+            box-sizing: border-box;
+            &_food{
+                line-height: 60rpx;
+                font-size: 30rpx;
+                display: flex;
+                flex-direction: row;
+                .shop_name{
+                    flex: 1 1 63%;
+                }
+                .shop_num{
+                    flex: 1 1 18.5%;
+                }
+                .shop_price{
+                    flex: 1 1 18.5%;
+                }
+            }
+            .choose{
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+                margin: 20rpx;
+                box-sizing: border-box;
+                view{
+                    padding: 10rpx 30rpx;
+                    background: pink;
+                    font-size: 28rpx;
+                }
+            }
+            .zhuohao{
+                width: 100%;
+                line-height: 70rpx;
+                border-bottom: 1px solid #dddddd;
+                display: flex;
+                align-items: center;
+                font-size: 30rpx;
+                input{
+                    margin-left: 20rpx;
+                    flex: 1 1 auto;
+                    text-align: right;
+                }
+            }
+            .remarks{
+                width: 100%;
+                line-height: 114rpx;
+                height: 114rpx;
+                border-bottom: 1px solid #dddddd;
+                display: flex;
+                justify-content: space-between;
+                font-size: 30rpx;
+
+                view:nth-child(1){
+                    flex: 0 0 130rpx;
+                }
+                .color{
+                    color: #a9a9a9;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 1;
+                    overflow: hidden;
+                }
+            }
+            .canhe{
+                width: 100%;
+                font-size: 30rpx;
+                border-top: 1px dashed #dddddd;
+                border-bottom: 1px dashed #dddddd;
+                color: #96e029;
+                padding: 20rpx 0;
+                .peisong{
+                    line-height: 50rpx;
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    .name{
+                        margin-right: 460rpx;
+                    }
+                }
+            }
+            /*.invoice{*/
+            /*display: flex;*/
+            /*justify-content: space-between;*/
+            /*font-size: 30rpx;*/
+            /*line-height: 114rpx;*/
+            /*height: 114rpx;*/
+            /*color: #a9a9a9;*/
+            /*}*/
+        }
+        .paytype{
+            margin-bottom: 100rpx;
+            font-size: 30rpx;
+            border-bottom: 1px solid #eee;
+            line-height: 120rpx;
+            display: flex;
+            justify-content: space-between;
+            view:nth-child(2){
+                .radio-group{
+                    display: flex;
+                    view{
+                        margin-right: 20rpx;
+                    }
+                }
+            }
+        }
+        .footer{
+            width: 100%;
+            height: 90rpx;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background: #302a2a;
+            .total{
+                float: left;
+                margin-left: 35rpx;
+                line-height: 90rpx;
+                font-size: 38rpx;
+                color: white;
+            }
+            .footer_order{
+                float: right;
+                width:26%;
+                text-align:center;
+                color:#fff;
+                font-size:32rpx;
+                height:90rpx;
+                line-height:90rpx;
+                background: #00d557;
+            }
+        }
+    }
+
+</style>
+
+<template>
+
+    <view class="order">
+        <view class="addres" wx:if="{{waimai}}">
+            <view class="dizhi" @tap="selectAddress">
+                <view class="xuanze" >
+                    <icon1 type="dizhi" color="#434343" fontSize="32"></icon1>
+                    <view class="pless">选择收货地址</view>
+                </view>
+                <view class="user"  wx:if="{{address}}">
+                    <view>{{userAddress}}</view>
+                    <view>{{userName}}　{{telNumber}}</view>
+                </view>
+            </view>
+            <view class="time" @tap="selectTime">
+                <icon2 type="shijian" color="#434343" fontSize="32"></icon2>
+                <view class="pless">选择到达时间</view>
+                <view class="time_houer">{{waimaiTime}}</view>
+            </view>
+        </view>
+
+
+
+        <view class="order_shop">
+
+            <view class="order_shop_food" wx:for="{{shopCar}}" wx:key="{{index}}">
+                <view class="shop_name">{{item.name}}</view>
+                <view class="shop_num">x{{item.num}}</view>
+                <view class="shop_price">￥{{item.price}}</view>
+            </view>
+
+            <view class="canhe" wx:if="{{waimai}}">
+                <view class="peisong">
+                    <view class="name">餐盒费</view>
+                    <view class="price">￥{{container}}</view>
+                </view>
+                <view class="peisong">
+                    <view class="name">配送费</view>
+                    <view class="price">￥{{delivery_price}}</view>
+                </view>
+
+            </view>
+
+            <!--<view class="choose" wx:if="{{!title}}">-->
+            <!--<view @tap="tangshi">堂食</view>-->
+            <!--<view @tap="waimai">外卖</view>-->
+            <!--</view>-->
+            <view class="zhuohao" wx:if="{{!waimai}}">
+                <view>餐桌号码</view>
+                <input type="text" @tap="scanCode" disabled="true" placeholder="点击扫取桌面二维码获取桌号" value="{{tabname}}" />
+
+            </view>
+            <view class="remarks" @tap="remarks">
+                <view >订单备注</view>
+                <view class="color" wx:if="{{sd}}">口味、偏好等　></view>
+                <view class="color" wx:if="{{!sd}}">{{remarks.textarea}},{{remarks.radio}},{{remarks.checkbox}}</view>
+            </view>
+
+            <view class="paytype">
+                <view>选择支付方式</view>
+                <view>
+                    <radio-group class="radio-group" bindchange="radioChange">
+                        <view>
+                            <radio value="现金" checked="checked"/>现金
+                        </view>
+                        <view>
+                            <radio value="微信" checked="checked"/>微信
+                        </view>
+
+                    </radio-group>
+                </view>
+            </view>
+            <!--<view class="invoice">-->
+            <!--<view>发票抬头</view>-->
+            <!--<view>商家暂不支持发票</view>-->
+            <!--</view>-->
+        </view>
+        <view class="footer">
+            <view class="footer_order" @tap="payOrder">确认下单</view>
+            <view class="total">
+                <view class="total_price">￥{{total}}</view>
+            </view>
+        </view>
+        <modal></modal>
+
+
+        <time-controller
+                :timeTitle="timeTitle"
+                :navDeailsLeft="navDeailsLeft"
+                :selectedStyleLeft="selectedStyleLeft"
+                :navDeailsRight="navDeailsRight"
+                :selectedStyleRight="selectedStyleRight"
+                :itemStyleRight="itemStyleRight"
+                :iconOptionRight="iconOptionRight"
+                @change.user="timeChange"
+        ></time-controller>
+
+    </view>
+
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import getExtJson from '../mixins/getExtJson'
+    import Icon from '../components/Icon'
+    import Modal from '../components/Modal'
+    import Toast from 'wepy-com-toast'
+    import TimeController from '../components/time-controller/TimeController'
+
+    export default class Order extends wepy.page{
+        config = {
+            navigationBarTitleText: '确认订单'
+        }
+
+        components = {
+            icon1: Icon,
+            icon2: Icon,
+            modal: Modal,
+            'time-controller': TimeController
+        }
+        data = {
+            waimaiTime: '',
+            navDeailsLeft: [
+                {
+                    name: '今天'
+                },
+            ],
+            navDeailsRight: [],
+            timeTitle: '请选择送达时间',
+            selectedStyleLeft: 'height: 102rpx; background-color: #fff; ',
+            selectedStyleRight: 'margin-left: 28rpx; border-bottom: 1rpx solid #f6f6f6; height: 102rpx; background-color: #fff; ',
+            itemStyleRight: 'margin-left: 28rpx; border-bottom: 1rpx solid #f6f6f6; height: 102rpx; background-color: #fff; ',
+            iconOptionRight: {
+                type: 'checked',
+                color: 'green',
+                fontSize: 32,
+            },
+            timeController: false,
+            total: 0,
+            shopCar: [],
+            title: '',
+            userName: '',
+            telNumber:'',
+            userAddress: '',
+            address:'',
+            toast: Toast,
+            items: [],
+            sd: true,
+            remarks: '',     //订单备注
+            waimai: false,
+            tableId: '',
+            tabname:'',
+            container: 0,
+            delivery_price: 0,
+            paytype: '微信'
+        }
+        /*
+        * 付款函数
+        * */
+        payment() {
+            this.product = []
+            this.shopCar.forEach((item) =>{
+                this.product.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quanty: item.num,
+                    images: item.img,
+                    container: item.container
+                })
+                this.$apply()
+            })
+            
+            let data = {
+                pay_type: this.paytype,
+                product: this.product,
+                amount: this.total,  //合计
+                peoples: '',    //就餐人数
+                source: '小程序',
+                openid: wx.getStorageSync('openid'),
+                config_id: this.config_id,
+                subtotal: this.total,  //小计
+                explain: this.remarks.radio+ this.remarks.textarea+ this.remarks.checkbox
+            }
+            if(this.title == '堂食') {
+                data.tables_id = this.tableId     //餐桌id
+                data.delivery = 0     // 订单类型 0 为堂食  1为外卖
+            } else if(this.title == '外卖') {
+                data.delivery = 1
+                data.delivery_price = this.delivery_price
+                data.delivery_site = this.userAddress
+                data.username = this.userName
+                data.userphone = this.telNumber
+                data.container = this.container
+                data.book_time = this.waimaiTime
+            }
+            wx.request({
+                url: `${this.api_host}/restapi/food-orders`,
+                method: 'post',
+                data: data,
+                success: (res) => {
+                    console.log('付款')
+                    if(res.data.success){
+                        if(this.paytype == '微信') {
+                            wx.requestPayment({
+                                timeStamp: res.data.data.timeStamp,
+                                nonceStr: res.data.data.nonceStr,
+                                nonceStr: res.data.data.nonceStr,
+                                package: res.data.data.package,
+                                signType: res.data.data.signType,
+                                paySign: res.data.data.paySign,
+                                success: (res) => {
+                                    console.log(res, '成功')
+                                    wx.navigateTo({url: 'paySuccess'})
+                                },
+                                fail: (res) => {
+                                    console.log(res, '失败')
+                                }
+                            })
+                        } else if(this.paytype == '现金') {
+                            wx.navigateTo({url: 'paySuccess'})
+                        }
+                        wepy.setStorageSync('shopCar', [])
+                    }else {
+                        console.log('弹窗')
+                        this.$invoke("toast", "show", {
+                            title: res.data.message,
+                            imgClassName: "iconfont icon-shibaibiaoqing",
+                            fontSize: 188
+                        });
+                    }
+                }
+            })
+        }
+        methods = {
+            radioChange(e) {
+                this.paytype = e.detail.value
+                this.$apply()
+            },
+            timeChange(e){
+                this.waimaiTime = e.data.value
+                this.$apply()
+            },
+            scanCode () {
+                wx.scanCode({
+                    success: (res) => {
+                        let urlArr = decodeURIComponent(res.result).split('?')[1]
+                        this.tableId  = urlArr.match(/table_id=[0-9]{1,}/)[0].split('=')[1]
+                        this.tabname  = urlArr.match(/table_name=[\s\S]*/)[0].split('=')[1]
+                        this.$aplly()
+                    }
+                })
+            },
+            payOrder() {
+                console.log(wx.getStorageSync('openid'), 1111)
+                if(wx.getStorageSync('openid')) {  //先判断有没有 openid
+                    if(this.title == '外卖') {     //判断是否是外卖
+                        if(!this.userName) {       //是外卖执行 就判断是否没有有收货地址
+                            wx.showToast({
+                                title: '请选择地址',
+                                image: '../images/fals.png',
+                                duration: 1000,
+                                mask: true
+                            })
+                        } else {
+                            this.payment()             //有收货地址 执行付款函数
+                        }
+
+                    } else if(this.title == '堂食'){
+                        if(this.tableId) {
+                            this.payment()     //不是外卖 直接执行付款函数
+                        } else {
+                            wx.showToast({
+                                title: '请选择桌号',
+                                image: '../images/fals.png',
+                                duration: 1000,
+                                mask: true
+                            })
+                        }
+
+                    } else {
+                        wx.showToast({
+                            title: '请选择外卖或堂食',
+                            image: '../images/fals.png',
+                            duration: 1000,
+                            mask: true
+                        })
+                    }
+
+
+                } else {
+                    this.$invoke('modal', 'show', {     //没有openid让用户授权
+                        content: '您还没有授权登录',
+                        specialType: 'getUserInfo',
+                        specialText: '登录',
+                        showCancel: true,
+                        success: (res) => {
+                            if(res.confirm) {
+                                if(res.data.userInfo){
+                                    this.$parent.getUserInfo()
+                                }
+                            }
+                        }
+                    })
+                }
+            },
+            /*
+            * 选择收货地址
+            * */
+            selectAddress() {
+                wx.chooseAddress({
+                    success: (res) => {
+                        this.userName = res.userName
+                        this.telNumber = res.telNumber
+                        this.userAddress = res.provinceName + res.cityName + res.countyName + res.detailInfo
+                        this.address = res
+                        this.$apply()
+                    }
+                })
+            },2
+            /*
+            * 选择到达时间
+            * */
+            selectTime() {
+
+                let {mooning_start, mooning_end, night_start, night_end} = wepy.getStorageSync('shopTime')
+
+                console.log(mooning_start, mooning_end, night_start, night_end)
+
+                mooning_start = parseInt(mooning_start.replace(':',''))
+                mooning_end = parseInt(mooning_end.replace(':',''))
+                night_start = parseInt(night_start.replace(':',''))
+                night_end = parseInt(night_end.replace(':',''))
+                this.navDeailsRight.length = 0
+                let timeArr = this.getStopTime(mooning_start, mooning_end).concat(this.getStopTime(night_start, night_end))
+                this.navDeailsRight.push(...timeArr)
+                this.$invoke('time-controller', 'show')
+                this.$apply()
+            },
+
+            /*
+            * 订单备注
+            * */
+            remarks() {
+                wx.navigateTo({url: `remarks?remarks=${JSON.stringify(this.remarks)}`})
+            }
+        }
+        /*
+            * 获取时间*/
+        getStopTime( start, end, speed){
+            speed = speed || 30
+            let TIME = []
+            let h = new Date().getHours() < 10 ? `0${new Date().getHours()}` : new Date().getHours()
+            let m = new Date().getMinutes() < 10 ? `0${new Date().getMinutes()}` : new Date().getMinutes()
+            let currentTime = `${h}${m}`
+            for(let i = start; i < end; ){
+                start += 15
+                if(start > end){
+
+                }else{
+                    if(start % 100 >= 60){
+                        let mm = (start % 100) - 60 < 10 ? `0${(start % 100) - 60}` : (start % 100) - 60
+                        let str = start.toString()
+                        let time = `${+str.substr(0, 2) + 1}:${mm}`
+
+                        if(start > (+currentTime + speed)){
+                            TIME.push({
+                                name: time,
+                                value: time
+                            })
+                            i = start = parseInt(time.replace(':', ''))
+                        }
+
+                    }else{
+                        let str = start.toString()
+                        if(start > (+currentTime + speed)){
+                            TIME.push({
+                                name: `${str.substr(0, 2)}:${str.substr(2)}`,
+                                value: `${str.substr(0, 2)}:${str.substr(2)}`
+                            })
+                        }
+                    }
+
+                }
+                i += 15
+            }
+            return TIME
+        }
+        onLoad(option) {
+            console.log(this.$parent.globalData, 11)
+            if(this.$parent.globalData.delivery_price) {
+                this.delivery_price = (this.$parent.globalData.delivery_price).toFixed(2)
+            } else {
+                this.delivery_price = '0.00'
+            }
+
+            this.tableId = this.$parent.globalData.tableId
+            this.tabname = this.$parent.globalData.tableId
+            this.title = option.title
+            console.log(this.title, 2)
+            getExtJson.call(this)
+            this.shopCar = JSON.parse(option.shopCar)
+            let price = 0
+            this.shopCar.forEach((item) => {
+                price = (Number(price) + Number(item.price) * Number(item.num)).toFixed(2)
+                this.container = (+this.container + item.container * item.num).toFixed(2)
+            })
+            if(option.title == '外卖') {
+                this.waimai = true
+
+                this.total = (+price + (+this.container) + (+this.delivery_price)).toFixed(2)
+                console.log(this.total, price, this.container, this.delivery_price)
+            }else {
+                this.total = price
+            }
+
+            this.$apply()
+        }
+        onShareAppMessage() {
+
+        }
+        onShow() {
+
+            let pages = getCurrentPages();
+            let currPage = pages[pages.length-1];
+            if(!currPage.data.remarks.checkbox) return
+            this.remarks = currPage.data.remarks
+            if(this.remarks) {
+                if(this.remarks.checkbox.length > 0 || this.remarks.radio.length > 0 || this.remarks.textarea.length > 0) {
+                    this.sd = false
+                } else {
+                    this.sd = true
+                }
+            }
+            this.$apply()
+        }
+    }
+</script>

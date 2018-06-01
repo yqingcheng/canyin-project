@@ -1,0 +1,231 @@
+<style lang="scss">
+
+    page{
+        background: #f5f5f5;
+    }
+    .order_info_wrap{
+        padding: 0 20rpx;
+        .order_info{
+            background: #fff;
+            border-radius:10rpx;
+            padding: 0 20rpx;
+            margin-top: 20rpx;
+            .info_wc{
+                font-size: 28rpx;
+                padding-top: 26rpx;
+            }
+            .info_ws{
+                font-size: 26rpx;
+                border-bottom: 1px solid #f5f5f5;
+                padding-top: 25rpx;
+                display: inline-block;
+                width: 100%;
+                text:last-child{
+                    float: right;
+                    width: 300rpx;
+                    display: inline-block;
+                    margin-bottom: 20rpx;
+                }
+
+            }
+            .info_wd{
+                font-size: 26rpx;
+                line-height: 60rpx;
+                text:last-child{
+                    float: right;
+                }
+            }
+        }
+    }
+
+    .foods{
+        width: 100%;
+        padding-top: 20rpx;
+        box-sizing: border-box;
+        .foodsbg{
+            box-sizing: border-box;
+            background: #fff;
+
+            border-radius: 6rpx;
+            padding-bottom: 37rpx;
+            .foodsxinxi{
+                color: #323232;
+                font-size: 28rpx;
+                line-height: 68rpx;
+            }
+            .foodsguigelist{
+                margin-bottom: 20rpx;
+                .foodsguige{
+                    color: #323232;
+                    font-size: 26rpx;
+                    line-height: 64rpx;
+                    border-bottom: 1px solid #f5f5f5;
+                    width: 100%;
+                    display: inline-block;
+                }
+                .foodslist{
+                    box-sizing: border-box;
+                    color: #323232;
+                    font-size: 26rpx;
+                    width: 100%;
+                    display: inline-block;
+                    margin-top: 20rpx;
+                    .lisy{
+                        display: inline-block;
+                        float: left;
+                    }
+                    .lisy:first-child{
+                        width: 50%;
+                    }
+                    .lisy:nth-child(2){
+                        width: 20%;
+                        text-align: center;
+                    }
+                    .lisy:last-child{
+                        width: 30%;
+                        text-align: right;
+                    }
+                }
+            }
+            .foodsfee{
+                box-sizing: border-box;
+                border-top:1px dashed #9ee443;
+                width: 100%;
+                padding: 24rpx 20rpx 0;
+                display: inline-block;
+                .feelist{
+                    color: #9ee443;
+                    font-size: 28rpx;
+                    line-height: 43rpx;
+                    text:last-child{
+                        float: right;
+                        padding-right: 0;
+                    }
+                }
+                .feezong{
+                    font-size: 34rpx;
+                    color: #7f7f7f;
+                    text-align: right;
+                    padding-top: 40rpx;
+                    text:last-child{
+                        color: #9ee443;
+                    }
+                }
+            }
+        }
+    }
+    .foodscon{
+        padding: 0 20rpx;
+    }
+
+</style>
+
+<template>
+
+    <view>
+        <view class="error" wx:if="{{!dataStatus}}">
+            <abnor type="DATA"></abnor>
+        </view>
+        <view class="order_info_wrap" wx:if="{{dataStatus}}">
+
+            <view class="order_info">
+                <view class="info_wc">订单{{orderInfo.status}}</view>
+                <view class="info_ws"><text>订单号</text> <text>{{orderInfo.id}}</text> </view>
+                <view class="info_wd"><text>下单时间</text> <text>{{orderInfo.created_at}}</text></view>
+            </view>
+
+            <view class="order_info" wx:if="{{orderInfo.delivery_site}}">
+                <view class="info_wc">配送时间</view>
+                <view class="info_ws"><text>收获信息</text> <text>{{orderInfo.delivery_site}}</text></view>
+                <view class="info_wd"><text>收货时间</text> <text>{{orderInfo.delivery_end}}</text></view>
+            </view>
+
+            <view class="foods">
+                <view class="foodsbg">
+                    <view class="foodscon">
+
+                        <view class="foodsxinxi">商品信息</view>
+
+                        <view class="foodsguigelist">
+                            <view class="foodsguige">{{orderInfo.delivery == 0 ? '堂食' : '外卖'}}</view>
+
+                            <repeat for="{{orderInfo.foods}}">
+                                <view class="foodslist">
+                                    <view class="lisy">{{item.name}}</view>
+                                    <view class="lisy">X {{item.quanty}}</view>
+                                    <view class="lisy">￥ {{item.price}}</view>
+                                </view>
+                            </repeat>
+                        </view>
+                    </view>
+
+                    <view class="foodsfee">
+                        <view class="feelist"><text>餐盒费 </text> <text>￥{{ container || 0 }}</text></view>
+                        <view class="feelist"><text>配送费 </text> <text>￥{{orderInfo.delivery_price || 0}}</text></view>
+                        <view class="feezong"><text>实付 </text> <text>￥{{orderInfo.amount}}</text></view>
+                    </view>
+
+                </view>
+            </view>
+
+        </view>
+    </view>
+
+
+</template>
+
+<script>
+
+    import wepy from 'wepy'
+    import getExtJson from '../mixins/getExtJson'
+    import Abnor from 'xnr-abnor'
+
+    export default class OrderInfo extends wepy.page {
+        config = {
+            navigationBarTitleText: '订单详情'
+        }
+        components = {
+            abnor: Abnor
+        }
+
+        data = {
+            orderId: '',
+            orderInfo: {},
+            dataStatus: true
+        }
+
+        getOrderInfoData(){
+            wepy.request({
+                url: `${this.api_host}/restapi/food-order/${this.orderId}`,
+                method: 'GET',
+                data: {
+                    config_id: this.config_id
+                },
+                success: res => {
+                    if(res.data.success){
+                        this.orderInfo = res.data.data
+                        this.$apply()
+                        // 餐盒费
+                        this.container = res.data.data.foods.reduce( (prev, item) => {
+                            return +item.container + prev
+                        }, 0)
+                    }else {
+                        this.dataStatus = false
+                    }
+
+                }
+            })
+        }
+        onShareAppMessage() {
+
+        }
+        onLoad(options){
+            getExtJson.call(this)
+            this.orderId = options.id
+            this.getOrderInfoData()
+        }
+
+    }
+
+
+</script>

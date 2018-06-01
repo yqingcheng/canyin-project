@@ -1,0 +1,56 @@
+<style lang="scss">
+    .block_c{
+        width: 230rpx;
+        height: 220rpx;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        align-items: center;
+        .iconfont{
+            margin-top: 20rpx;
+            line-height: 90rpx;
+        }
+        .tab_name{
+            font-size: 30rpx;
+            color:white;
+            line-height: 90rpx;
+            view{
+                float: left;
+            }
+        }
+    }
+</style>
+
+<template>
+    <navigator url="{{iconJson.url}}?title={{iconJson.text}}&id=7" class="block_c" style="background: {{iconJson.background}};">
+        <icon-new ></icon-new>
+        <span class="tab_name">{{iconJson.text}}</span>
+    </navigator>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import Icon from '../components/Icon'
+
+    export default class Tabnav extends wepy.component{
+        props = {
+            iconJson: {
+                type: [Object],
+                coerce: newVal => {
+//                    console.log(newVal, 2)
+                    return newVal
+                }
+            }
+        }
+
+        data = {
+
+        }
+        components = {
+            'icon-new': Icon,
+        }
+        onLoad() {
+            this.$invoke('icon-new', 'show' ,this.iconJson)
+        }
+    }
+</script>

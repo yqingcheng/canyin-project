@@ -1,0 +1,230 @@
+<style lang="scss">
+    page{
+        height: 100%;
+        width: 100%;
+    }
+    .remarks{
+        width: 100%;
+        height: 100%;
+        background: #f5f5f5;
+        padding: 30rpx;
+        box-sizing: border-box;
+        textarea{
+            font-size: 27rpx;
+            background: white;
+            width: 100%;
+            padding: 20rpx;
+            box-sizing: border-box;
+            position: relative;
+            view{
+                position: absolute;
+                right: 20rpx;
+                bottom: 20rpx;
+                color: #888888;
+            }
+        }
+        .remarks_block{
+            padding: 10rpx;
+            .checkbox{
+                margin-right: 25rpx;
+                margin-top: 20rpx;
+                border-radius: 10rpx;
+                display: inline-block;
+                height: 58rpx;
+                line-height: 60rpx;
+                border: 1px solid #dbdbdb;
+                font-size: 27rpx;
+                padding: 0 15rpx;
+                &.active{
+                    background: #ef0000;
+                    color: #fff;
+                }
+            }
+            .radios{
+                float: left;
+                margin-right: 25rpx;
+                margin-top: 20rpx;
+                border-radius: 10rpx;
+                height: 58rpx;
+                border: 1px solid #dbdbdb;
+                font-size: 27rpx;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-right: -1px;
+                box-sizing: border-box;
+                overflow: hidden;
+                view, label{
+                    border-right: 1px solid #dbdbdb;
+                    height: 100%;
+                    line-height: 58rpx;
+                    width: 110rpx;
+                    text-align: center;
+                }
+                .radioActive{
+                    background: #ef0000;
+                    color: #fff;
+                }
+            }
+        }
+        .Determine{
+            width: 100%;
+            background: #00d557;
+            color: white;
+            line-height: 70rpx;
+            font-size: 28rpx;
+            border-radius: 10rpx;
+            text-align: center;
+            margin-top: 15rpx;
+        }
+    }
+</style>
+
+<template>
+    <view class="remarks">
+        <textarea @input="textareaChange" maxlength="50" name="" id="" value="{{remarks.textarea}}"  placeholder="请写额外对餐厅和骑手小哥备注的信息">
+            <view>
+                {{numcode}}/50个字
+            </view>
+        </textarea>
+        <view class="remarks_block">
+            <radio-group bindchange="radioChange" class="radios">
+                <label  wx:for="{{itemss}}" wx:key="{{index}}" class="{{radioStatus[index] ? 'radioActive' : ''}}" @tap="tadioChoose" data-status="{{radioStatus[index]}}" data-index="{{index}}">
+                    {{item.name}}
+                    <radio value="{{item.name}}" style="display:none"/>
+                </label>
+            </radio-group>
+
+                <repeat for="{{items}}">
+                    <view class="checkbox {{labelStatus[index] ? 'active' : ''}}" @tap="label" data-name="{{item.name}}" data-index="{{index}}" data-status="{{labelStatus[index]}}">
+                        {{item.name}}
+                    </view>
+                </repeat>
+
+        </view>
+        <view class="Determine" @tap="Determine">确定</view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+
+    export default class Remarks extends wepy.page{
+        config = {
+            navigationBarTitleText: '订单备注'
+        }
+
+        data = {
+            itemss: [
+                {name: '少点辣'},
+                {name: '多点辣'},
+                {name: '不要辣'}
+            ],
+            items: [
+                {name: '不要香菜'},
+                {name: '不要洋葱'},
+                {name: '不要土豆'},
+                {name: '多点醋'},
+                {name: '多点葱'}
+            ],
+            asd: {},
+            labelStatus: [],
+            radioStatus: [],
+            remarks: {
+                checkbox: [],
+                textarea: '',
+                radio: ''
+            },
+            textarea:'',
+            numcode: 0,
+            prevPage: '',  //上一个页面
+        }
+
+        methods = {
+
+
+            textareaChange(e) {
+                this.numcode = e.detail.value.length
+                this.remarks.textarea = e.detail.value
+                this.$apply()
+            },
+            radioChange(e) {
+                this.remarks.radio = e.detail.value
+                this.$apply()
+            },
+            tadioChoose(e) {
+                let index = e.currentTarget.dataset.index
+                let status = e.currentTarget.dataset.status
+                this.radioStatus = []
+                this.radioStatus[index] = true
+                if(status) {
+                    this.radioStatus = []
+                    this.remarks.radio = ''
+                }
+                this.$apply()
+            },
+            /*
+            * 点击label 选中的模块背景颜色发生变化
+            * */
+            label(e) {
+                let status = e.currentTarget.dataset.status
+                let index = e.currentTarget.dataset.index
+                if(status){
+                    this.labelStatus[index]= false
+                }else{
+                    this.labelStatus[index]= true
+                }
+
+                let name = e.currentTarget.dataset.name
+                let fg = this.remarks.checkbox.some( item => {
+                    return item === name
+                })
+                if(!fg){
+                    this.remarks.checkbox.push(name)
+                }else{
+                    for(let i = 0; i < this.remarks.checkbox.length; i++){
+                        if(this.remarks.checkbox[i] === name) this.remarks.checkbox.splice(i, 1)
+                    }
+                }
+                this.$apply()
+
+            },
+            Determine() {
+                let pages = getCurrentPages();//当前页面
+                let prevPage = pages[pages.length-2];//上一页面
+                prevPage.setData({//直接给上移页面赋值
+                    remarks: this.remarks
+                });
+                wx.navigateBack({//返回
+                    delta:1
+                })
+            }
+        }
+        onShareAppMessage() {
+
+        }
+        onLoad(option) {
+            let ss = JSON.parse(option.remarks)
+            if(ss) {
+                if(ss.checkbox.length > 0 || ss.textarea.length > 0 || ss.radio.length > 0 ) {
+                    this.remarks = ss
+                    ss.checkbox.forEach( (item, index) => {
+                        this.items.forEach((cut, i) => {
+                            if(item === cut.name){
+                                this.labelStatus[i]= true
+                            }
+                        })
+                    })
+                    this.itemss.forEach((cut, i) => {
+                        if(ss.radio === cut.name){
+                            this.radioStatus[i] = true
+                        }
+                    })
+
+                    this.$apply()
+                }
+            }
+            this.$apply()
+        }
+    }
+</script>

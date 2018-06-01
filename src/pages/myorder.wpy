@@ -1,0 +1,349 @@
+
+<style lang="scss">
+    .member_info_tab_view{
+        padding-top: 70rpx;
+        &_not{
+            line-height: 240rpx;
+            text-align: center;
+            font-size: 36rpx;
+        }
+        &_item{
+            padding: 0 20rpx;
+            border-top: 12rpx solid #dedede;
+        }
+        &_top,
+        &_price{
+            display: flex;
+            font-size: 28rpx;
+            justify-content: space-between;
+        }
+        &_top{
+            line-height: 80rpx;
+        }
+        &_cont{
+            display: flex;
+            flex-wrap: wrap;
+            &_img_wrap{
+                width: 33.33%;
+                flex-shrink: 0;
+                margin-bottom: 12rpx;
+                view{
+                    width: 230rpx;
+                    height: 190rpx;
+                    margin: 0 auto;
+                    background: {
+                        size: cover;
+                        position: center;
+                    }
+                }
+
+            }
+        }
+        &_price{
+            padding: 12rpx 0;
+            .price{
+                font-size: 38rpx;
+                color: #e6416c
+            }
+            .btns{
+                view{
+                    width: 120rpx;
+                    height: 48rpx;
+                    line-height: 48rpx;
+                    font-size: 24rpx;
+                    text-align: center;
+                    color: #333;
+                    border-radius: 12rpx;
+                    background-color: #f2f2f2;
+                    border: 1px solid #dedede;
+                    float: left;
+                    margin-left: 16rpx;
+                }
+            }
+        }
+
+    }
+    .member_info_top{
+        width: 100%;
+        background-color: #fff;
+        position: fixed;
+        left: 0;top: 0;
+        z-index:99;
+
+    }
+</style>
+
+<template>
+    <view class="member_info_wrap">
+        <view class="member_info_top">
+            <tab-switch :switchConfig.sync="switchConfig" :currentIndex.sync="current" @changeCurrent.user="changeCurrent"></tab-switch>
+        </view>
+
+        <view class="member_info_tab_view_not" wx:if="{{tabViewStatus}}">
+            <abnor type="DATA"></abnor>
+        </view>
+
+        <view class="member_info_tab_view" wx:if="{{!tabViewStatus}}">
+            <repeat for="{{tabView}}">
+
+                <view class="member_info_tab_view_item" @tap="goTo" data-status="{{item.status}}" id="{{item.id}}">
+                    <view class="member_info_tab_view_top">
+                        <view>
+                            订单编号:{{item.id}}
+                        </view>
+                        <view>
+                            {{item.status}}
+                        </view>
+                    </view>
+
+                    <view class="member_info_tab_view_cont">
+                        <repeat for="{{item.foods}}" item="foods">
+                            <view class="member_info_tab_view_cont_img_wrap">
+                                <view style="background-image: url({{foods.image}})"></view>
+                            </view>
+                        </repeat>
+                    </view>
+
+                    <view class="member_info_tab_view_price" catchtap="catch">
+                        <view class="price">
+                            ￥{{item.amount}}
+                        </view>
+                        <view class="btns">
+                            <view id="{{item.btnId}}" wx:if="{{item.btnText}}" data-index="{{index}}" @tap="btnActive">
+                                {{item.btnText}}
+                            </view>
+                            <view wx:if="{{item.cancelBtn}}" data-index="{{index}}" id="{{item.id}}" @tap="cancelOrder">取消订单</view>
+                        </view>
+                    </view>
+                </view>
+
+            </repeat>
+        </view>
+        <toast />
+    </view>
+</template>
+
+<script>
+
+    import wepy from 'wepy'
+    import TabSwitch from '../components/TabSwitch'
+    import getExtJson from '../mixins/getExtJson'
+    import retainedDecimalMoney from '../mixins/retainedDecimalMoney'
+    import Toast from 'wepy-com-toast'
+    import payMethod from '../mixins/pay'
+    import Abnor from 'xnr-abnor'
+
+    export default class MemberInfo extends wepy.page{
+        config = {
+            navigationBarTitleText: '我的订单'
+        }
+        data = {
+            cancelBtnBol: false
+        }
+        components = {
+            'tab-switch': TabSwitch,
+            toast: Toast,
+            abnor: Abnor
+        }
+        methods = {
+            catch(){},
+            changeCurrent(index){
+                wepy.showLoading({
+                    title: '加载中...',
+                    mask: true
+                })
+                if(index != 4){
+                    this.getTabViewData(index)
+                }else{
+                    this.getTabViewData()
+                }
+
+                this.tabView = this.tabViewConfig[index]
+                wepy.setNavigationBarTitle({
+                    title: this.status[index]
+                })
+            },
+            btnActive(e){
+                const id = e.currentTarget.id
+                const index = e.currentTarget.dataset.index
+                if(id == 0){
+                    payMethod.call(this, {
+                        data: {
+                            id: this.tabView[index].id,
+                            config_id: this.config_id,
+                            openid: this.openid
+                        }
+                    })
+                }
+            },
+            goTo(e){
+                wepy.navigateTo({
+                    url: `orderInfo?id=${e.currentTarget.id}&status=${e.currentTarget.dataset.status}`
+                })
+            },
+            cancelOrder(e){
+                wepy.showModal({
+                    title: '提示',
+                    content: '是否取消订单',
+                    success: (res) => {
+                        if(res.confirm){
+                            wepy.showLoading({
+                                title: '加载中...'
+                            })
+                            const id = e.currentTarget.id
+                            const index = e.currentTarget.dataset.index
+                            wepy.request({
+                                url: `${this.api_host}/restapi/goods-orders/${id}`,
+                                data: {
+                                    config_id: this.config_id,
+                                    openid: this.openid
+                                },
+                                method: 'DELETE',
+                                success: (res) => {
+                                    wepy.hideLoading()
+                                    this.$invoke("toast", "show", {
+                                        title: res.data.data.status,
+                                        imgClassName: "iconfont icon-shibaibiaoqing icon_size"
+                                    })
+                                    this.tabView.splice(index, 1)
+                                    this.$apply()
+                                }
+                            })
+                        }
+                    }
+                })
+
+            }
+        }
+        data = {
+            current: 0,
+            switchConfig: [
+                {
+                    name: '待付款',
+                },
+                {
+                    name: '待发货',
+                },
+                {
+                    name: '待收货',
+                },
+                {
+                    name: '已完成',
+                },
+                {
+                    name: '全部订单',
+                },
+            ],
+            tabViewConfig: [],
+            tabView: [],
+            tabViewStatus: true,
+            status: [
+                '待付款',
+                '待发货',
+                '已发货',
+                '已完成',
+                '全部订单',
+            ]
+        }
+        getTabViewData(index){
+            let data = {}
+            if(index){
+                const status = this.status[index]
+                data = {
+                    config_id: this.config_id,
+                    pagesize: 12,
+                    page: 1,
+                    filter:[
+                        {
+                            status: status
+                        },
+                        {
+                            openid: this.openid
+                        }
+                    ]
+                }
+            }else{
+                data = {
+                    config_id: this.config_id,
+                    pagesize: 12,
+                    page: 1,
+                    filter:[
+                        {
+                            openid: this.openid
+                        }
+                    ]
+                }
+            }
+
+            wepy.request({
+                url: `${this.api_host}/restapi/food-orders`,
+                data: data,
+                success: (res) => {
+                    if(res.data.success){
+                        let inx = index || 4
+                        let data = res.data.data.items
+                        this.tabViewConfig[inx] = this.addBtnText(data)
+                        this.tabView = this.addBtnText(data)
+                        this.tabViewStatus = this.tabView.length > 0 ? false : true
+                        this.$apply()
+                    }
+                    wepy.hideLoading()
+                }
+            })
+        }
+        addBtnText(data){
+            data.forEach( item => {
+                if(item.status == '待付款'){
+                    item.btnText = '付款'
+                    item.btnId = 0,
+                        item.cancelBtn = true
+                }else if(item.status == '待发货'){
+                    item.btnText = ''
+                    item.btnId = 1
+                    item.cancelBtn = false
+                }else if(item.status == '已发货'){
+                    item.btnText = ''
+                    item.btnId = 2
+                    item.cancelBtn = false
+                }else if(item.status == '已完成'){
+                    item.btnText = ''
+                    item.btnId = 3
+                    item.cancelBtn = false
+                }
+            })
+            return data
+        }
+        onShow(){
+            if(this.current != 4){
+                this.getTabViewData(this.current)
+            }else{
+                this.getTabViewData()
+            }
+        }
+        onShareAppMessage() {
+
+        }
+        onLoad(option){
+            this.current = option.index
+            this.tabView = this.tabViewConfig[option.index]
+            getExtJson.call(this)
+            if(option.index != 4){
+                this.getTabViewData(option.index)
+            }else{
+                this.getTabViewData()
+            }
+
+            wepy.setNavigationBarTitle({
+                title: this.status[option.index]
+            })
+            wepy.showLoading({
+                title: '加载中...',
+                mask: true
+            })
+
+        }
+    }
+
+</script>
+
+

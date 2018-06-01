@@ -1,0 +1,167 @@
+
+<style lang="scss">
+    .card{
+        &_wrap{
+            display: flex;
+            max-height: 60vh;
+            overflow: hidden;
+            padding: 20rpx;
+            box-sizing: border-box;
+            flex-wrap: wrap;
+        }
+        &_two_item_wrap {
+            justify-content: space-between;
+        }
+        @at-root{
+            @keyframes shaking {
+                0%{
+                    transform: (0deg);
+                }
+                25%{
+                    transform: rotate(10deg);
+                }
+                50%{
+                    transform: rotate(0deg);
+                }
+                75%{
+                    transform: rotate(-10deg);
+                }
+                100%{
+                    transform: rotate(10deg);
+                }
+            }
+            .transform{
+                animation: shaking .5s ease-in-out;
+            }
+        }
+        &_item{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &_two_column{
+                width: 345rpx;
+                height: 214rpx;
+                margin-bottom: 16rpx;
+            }
+            &_three_column{
+                width: 230rpx;
+                height: 218rpx;
+                margin-bottom: 11rpx;
+                margin-right: 11rpx;
+                flex-grow: 0;
+                flex-shrink: 0;
+                &:nth-of-type(3n){
+                    margin-right: 0;
+                }
+            }
+            .cont{
+                text-align: center;
+                font-size: 30rpx;
+                color: #fff;
+            }
+            .img{
+                margin-bottom: 26rpx;
+                image{
+                    width: 86rpx;
+                    height: 86rpx;
+                }
+            }
+        }
+    }
+</style>
+
+<template>
+    
+    <view class="card_wrap {{len > 6 ? '' : 'card_two_item_wrap'}}">
+        <repeat for="{{cardConfig.data}}">
+            <view 
+                class="card_item {{len > 6 ? 'card_item_three_column' : 'card_item_two_column'}} {{click[index] ? 'transform' : ''}}" 
+                style="background-color: {{item.bgColor}}"
+                data-index="{{index}}"
+                @tap="clickItem"
+            >
+                <view class="cont">
+                    <view class="img">
+                        <image src="{{item.icon}}"></image>
+                    </view>
+                    <text>{{item.name}}</text>
+                </view>
+            </view>
+        </repeat>
+    </view>
+
+</template>
+
+<script>
+
+    import wepy from 'wepy'
+    import getExtJson from '../mixins/getExtJson'
+    import coordtransform from 'coordtransform'
+
+    export default class Card extends wepy.component {
+        props = {
+            cardConfig: {
+                type: [Array, Object],
+                coerce: newVal => newVal
+            }
+        }
+
+        watch = {
+            cardConfig(newVal){
+                this.len = newVal.data.length
+                this.$apply()
+            }
+        }
+
+        data = {
+            len: 0,
+            click: [],
+            oldIndex: ''
+        }
+        
+        methods = {
+            clickItem(e){
+                this.$emit('clickItem', e.currentTarget.dataset.index)
+                let index = e.currentTarget.dataset.index
+                this.click[index] = true
+                setTimeout(() => {
+                    this.click.length = 0
+                    this.$apply()
+                }, 300)
+                setTimeout(() => {
+
+                    this.click[index] = false
+//                    if(url === 'map'){
+//                        wepy.request({
+//                            url: `${this.api_host}/restapi/merchants/${this.merchant_id}`,
+//                            data: {
+//                                config_id: this.config_id
+//                            },
+//                            success: (res) => {
+//                                let data = res.data.data
+//                                let log = +data.coordinates.split(',')[0]
+//                                let lat = +data.coordinates.split(',')[1]
+//                                let gcj = coordtransform.bd09togcj02(log, lat); //百度经纬度坐标转国测局坐标
+//                                wepy.openLocation({
+//                                    latitude: gcj[1],
+//                                    longitude: gcj[0],
+//                                    name: data.name,
+//                                    address: data.address
+//                                })
+//                            }
+//                        })
+//                        return
+//                    }
+
+                }, 200)
+
+            }
+        }
+        onLoad(){
+            getExtJson.call(this)
+        }
+    }
+
+</script>
+
+

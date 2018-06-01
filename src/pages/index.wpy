@@ -1,0 +1,272 @@
+<style lang="scss">
+    @font-face {font-family: "iconfont";
+        src: url('data:application/x-font-woff;charset=utf-8;base64,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') format('truetype');
+    }
+
+    .iconfont {
+        font-family:"iconfont" !important;
+        font-size:16px;
+        font-style:normal;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .icon-biaoqing:before { content: "\e646"; }
+
+    .icon-iconfontzhizuobiaozhun0262:before { content: "\e6cc"; }
+
+    .icon-kaifazhong:before { content: "\e6c5"; }
+    .carousel_wrap{
+        height: calc(40vh - 112rpx);
+    }
+    .card_contain{
+        height: 60vh;
+    }
+    .copyright{
+        line-height: 36rpx;
+        font-size: 24rpx;
+        text-align: center;
+        color: #999;
+    }
+    .search{
+        width: 100%;
+        height: 110rpx;
+        border-top: 1px solid #dbdbdb;
+        .search_block{
+            width: 710rpx;
+            height: 70rpx;
+            border-radius: 10rpx;
+            border: 1px solid #dbdbdb;
+            margin: 20rpx auto;
+            display: flex;
+            justify-content: center;
+            align-items: center
+            font-size: 30rpx;;
+            color: #8b8b8b;
+            view{
+                margin-left: 10rpx;
+                margin-top: -5rpx;
+            }
+        }
+    }
+    .icon_size{
+        font-size: 188rpx;
+    }
+    .jishu{
+        font-size: 24rpx;
+        width: 100%;
+        text-align: center;
+        margin: 20rpx 0 10rpx 0;
+    }
+</style>
+
+<template>
+    <view class="container">
+
+        <view class="search">
+            <view class="search_block" @tap="skipSearch">
+                <icon-new type="icon--" fontSize="50" color="#8b8b8b"></icon-new>
+                <view>搜索餐品</view>
+            </view>
+        </view>
+
+        <!-- 轮播图组件  -->
+        <carousel :carouselConfig.sync="carouselConfig"></carousel>
+
+        <!-- 卡片式导航 -->
+        <view class="card_contain">
+            <card :cardConfig.sync="cardNavConfig" @clickItem.user="clickItem"></card>
+        </view>
+        <view class="jishu" @tap="xnr">小泥人技术支持</view>
+        <toast></toast>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import Carousel from 'xnr-swiper'
+    import Card from '../components/Card'
+    import getExtJson from '../mixins/getExtJson'
+    import Icon from '../components/Icon'
+    import Toast from 'xnr-toast'
+
+    export default class Index extends wepy.page {
+        config = {
+            navigationBarTitleText: '首页'
+        }
+        components = {
+            carousel: Carousel,
+            card: Card,
+            'icon-new': Icon,
+            toast: Toast
+        }
+
+        data = {
+            api_host: '',
+            config_id: '',
+            merchant_id: '',
+            carouselConfig: {
+                autoplay: true,
+                interval: 3000,
+                duration: 1000,
+                loop: true,
+                dots: true,
+                dotsColor: "#fff",
+                dotsActiveColor: "rgba(0,0,0,.5)",
+                imgUrls: [],
+
+            },
+            cardNavConfig: {},
+        }
+
+        // 轮播图数据请求
+        getCarousel(){
+            wx.request({
+                url: `${this.api_host}/restapi/wechat-focus`,
+                data: {
+                    config_id: this.config_id,
+                    belongs: 1,
+                    type: 0
+                },
+                success: (res) => {
+                    const data = res.data.data.map( (item) => {
+                        return `${this.img_host}${item.image}`
+                    })
+                    this.carouselConfig.imgUrls = data
+                    this.$apply()
+                }
+            })
+        }
+
+        // 获取card式菜单
+        getCardData(){
+            let color = [
+                '#d17b00',
+                '#556cf0',
+                '#7883ff',
+                '#c90013',
+                '#f3aa41',
+                '#00c800'
+            ]
+            this.menu = this.menu.map( (item, index) => {
+                return {
+                    name: item.name,
+                    icon: item.icon,
+                    bgColor: item.bgColor || color[index]
+                }
+            })
+            this.cardNavConfig['data'] = this.menu
+            this.$apply()
+        }
+        methods = {
+            xnr(){
+                wepy.navigateTo({
+                    url: `webView?url=https://www.xiaoniren.cn/support/index`
+                })
+            },
+            skipSearch(){
+                wx.navigateTo({url: `search`})
+            },
+            clickItem(index) {
+                console.log(index)
+                if(index == 0) {
+                    wepy.navigateTo({
+                        url: `goods?title=堂食`
+                    })
+                }if(index == 1) {
+                    wepy.navigateTo({
+                        url: `goods?title=外卖`
+                    })
+                }if(index == 2) {
+                    wx.showModal({
+                        title: '敬请期待',
+                        cancelText: '去店预约',
+                        confirmText: '拨打电话',
+                        content: `电话预约：${this.$parent.globalData.phone}`,
+                        success: (res) => {
+                            if (res.confirm) {
+                                wx.makePhoneCall({
+                                    phoneNumber: `${this.$parent.globalData.phone}`
+                                })
+                            }
+                        }
+                    })
+                }if(index == 3) {
+                    wepy.navigateTo({
+                        url: `memberInfo?index=4`
+                    })
+                }if(index == 4) {
+                    wepy.navigateTo({
+                        url: `collection`
+                    })
+                }if(index == 5) {
+                    wepy.navigateTo({
+                        url: `me`
+                    })
+                }
+//                if(!url) {
+//                    wx.showModal({
+//                        title: '敬请期待',
+//                        cancelText: '去店预约',
+//                        confirmText: '拨打电话',
+//                        content: `电话预约：${this.$parent.globalData.phone}`,
+//                        success: (res) => {
+//                            if (res.confirm) {
+//                                wx.makePhoneCall({
+//                                    phoneNumber: `${this.$parent.globalData.phone}`
+//                                })
+//                            } else if (res.cancel) {
+//                            }
+//                        }
+//                    })
+//                }
+            }
+        }
+        onShareAppMessage() {
+
+        }
+        onLoad() {
+            getExtJson.call(this)
+            this.$parent.getUserInfo()
+            this.getCarousel()
+            this.getCardData()
+            /*
+            * 餐馆列表
+            * */
+            wx.request({
+                url: `${this.api_host}/restapi/food-restaurants?config_id=${this.config_id}`,
+                success: (res) => {
+                    /*
+                    * 餐馆详情
+                    * */
+                    wx.request({
+                        url: `${this.api_host}/restapi/food-restaurants/${res.data.data[0].id}?config_id=${this.config_id}`,
+                        success: (res) => {
+                            console.log(res)
+//                            console.log(res.data.data.address, '商家地址')
+//                            console.log(res.data.data.logo, 'logo')
+//                            console.log(res.data.data.phone, '商家电话')
+                            this.$parent.globalData.phone = res.data.data.phone
+//                            console.log(res.data.data.nooning_start, '午餐开始时间')
+//                            console.log(res.data.data.nooning_stop, '午餐结束时间')
+//                            console.log(res.data.data.night_start, '晚餐开始时间')
+//                            console.log(res.data.data.night_stop, '晚餐结束时间')
+//                            console.log(res.data.data.delivery_scope, '配送范围')
+//                            console.log(res.data.data.delivery_price, '配送费')
+//                            console.log(res.data.data.images, '店招图')
+                            wepy.setStorageSync('shopTime', {
+                                mooning_start: res.data.data.nooning_start || '11:00',
+                                mooning_end: res.data.data.nooning_stop || '14:50',
+                                night_start: res.data.data.night_start || '17:00',
+                                night_end: res.data.data.night_stop || '22:00'
+                            })
+                            this.$parent.globalData.delivery_price = res.data.data.delivery_price || 0
+                            this.$apply()
+                        }
+                    })
+                    this.$apply()
+                }
+            })
+        }
+    }
+</script>

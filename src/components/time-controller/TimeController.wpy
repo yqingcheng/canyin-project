@@ -1,0 +1,178 @@
+<style lang="scss">
+    .time_controller{
+        &_wrap{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 0;top: 0;
+            z-index: 999;
+        }
+        &_mask{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;top: 0;
+            background: rgba(0, 0, 0, .2);
+        }
+        
+        &_cont{
+            width: 100%;
+            height: 40vh;
+            position: absolute;
+            left: 0; bottom: 0;
+            background: #fff;
+        }
+        &_title{
+            width: 100%;
+            height: 88rpx;
+            line-height: 88rpx;
+            font-size: 30rpx;
+            text-align: center;
+            background: #f5f5f5;
+            position: absolute;
+            left: 0;top: 0;
+            transform: translateY(-100%)
+        }
+        &_scroll{
+            height: 40vh;
+        }
+        &_scroll_left{
+            width: 208rpx;
+            height: 100%;
+            background: #f5f5f5;
+            position: absolute;
+            top: 0; left: 0;
+        }
+        &_scroll_right{
+            width: 542rpx;
+            height: 100%;
+            background: #fff;
+            position: absolute;
+            top: 0;right: 0;
+        }
+    }
+</style>
+
+<template>
+    
+    <view class="time_controller_wrap" wx:if="{{timeController}}">
+
+        <view class="time_controller_mask" @tap="maskClick"></view>
+
+        <view class="time_controller_cont">
+            <view class="time_controller_title">
+                {{timeTitle}}
+            </view>
+
+            <view class="time_controller_scroll">
+                <view class="time_controller_scroll_left">
+                    <scroll-nav 
+                        :navDeails.sync="navDeailsLeft" 
+                        :selectedStyle="selectedStyleLeft"
+                        :itemStyle="itemStyleLeft"
+                        :iconOption="iconOptionLeft"
+                        @change.user="changeLeft"
+                    ></scroll-nav>
+                </view>
+                <view class="time_controller_scroll_right">
+                    <scroll-nav1
+                        :navDeails.sync="navDeailsRight"
+                        :selectedStyle="selectedStyleRight"
+                        :itemStyle="itemStyleRight"
+                        :iconOption="iconOptionRight"
+                        @change.user="changeRight"
+                    >
+                    </scroll-nav1>
+                </view>
+            </view>
+
+        </view>
+
+    </view>
+
+</template>
+
+<script>
+
+    import wepy from 'wepy'
+    import ScrollNav from './ScrollNav'
+
+    export default class TimeController extends wepy.component {
+        props = {
+            navDeailsLeft: {
+                type: Array,
+                coerce: res => res
+            },
+            navDeailsRight: {
+                type: Array,
+                coerce: res => res
+            },
+            selectedStyleLeft: {
+                type: String,
+                coerce: res => res
+            },
+            selectedStyleRight: {
+                type: String,
+                coerce: res => res
+            },
+            itemStyleLeft: {
+                type: String,
+                coerce: res => res
+            },
+            itemStyleRight: {
+                type: String,
+                coerce: res => res
+            },
+            iconOptionLeft: {
+                type: Object,
+                coerce: res => res
+            },
+            iconOptionRight: {
+                type: Object,
+                coerce: res => res
+            },
+            timeTitle: {
+                type: String,
+                coerce: res => res
+            }
+        }
+        data = {
+            timeController: false
+        }
+        methods = {
+            changeLeft(data){
+                console.log(data)
+                this.change('left', data)
+            },
+            changeRight(data){
+                this.change('right', data)
+            },
+            maskClick(){
+                this.hide()
+            }
+        }
+        change(name, data){
+            this.$emit('change',{
+                data: data,
+                name: name
+            })
+            if(name == 'right'){
+                this.hide()
+            }
+        }
+        show(){
+            this.timeController = true
+            this.$apply()
+        }
+        hide(){
+            this.timeController = false
+            this.$apply()
+        }
+        components = {
+            'scroll-nav': ScrollNav,
+            'scroll-nav1': ScrollNav
+        }
+    }
+
+</script>
+

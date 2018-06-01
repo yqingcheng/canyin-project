@@ -1,0 +1,126 @@
+<style lang="scss">
+
+    @font-face {
+      font-family: "iconfont";
+      src: url('//at.alicdn.com/t/font_622270_87d6lfbuo9a4i.ttf?t=1524477976744') format('truetype');
+    }
+    .iconfont {
+		font-family:"iconfont" !important;
+		font-size:16px;
+		font-style:normal;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	.icon-dengdaifukuan:before { content: "\e60e"; }
+
+	.icon-jushoucang:before { content: "\e643"; }
+
+	.icon-tixing:before { content: "\e6cc"; }
+
+	.icon-customer:before { content: "\e69f"; }
+
+	.icon-wodekoudai:before { content: "\e624"; }
+
+	.icon-waimai:before { content: "\e6da"; }
+
+	.icon-checked:before { content: "\e632"; }
+
+	.icon-star-active:before { content: "\e630"; }
+
+	.icon-scan:before { content: "\e612"; }
+
+	.icon-back:before { content: "\e613"; }
+
+	.icon-icon-test:before { content: "\e626"; }
+
+	.icon-lianxiwomen:before { content: "\e72f"; }
+
+	.icon-shijian:before { content: "\e62a"; }
+
+	.icon-yuding:before { content: "\e603"; }
+
+	.icon-select:before { content: "\e725"; }
+
+	.icon-service:before { content: "\e727"; }
+
+	.icon-gengduopintuan:before { content: "\e60f"; }
+
+	.icon-dizhi:before { content: "\e610"; }
+
+	.icon-meal:before { content: "\e6b1"; }
+
+	.icon-meishi:before { content: "\e608"; }
+
+	.icon-xinxi:before { content: "\e622"; }
+
+	.icon-home:before { content: "\e604"; }
+
+	.icon-star:before { content: "\e60a"; }
+
+	.icon-canting:before { content: "\e611"; }
+
+	.icon-shangpin:before { content: "\e635"; }
+
+	.icon-jiantouyou:before { content: "\e62d"; }
+
+	.icon-daifukuan:before { content: "\e63f"; }
+
+	.icon-daishouhuo:before { content: "\e640"; }
+
+	.icon-weishiyong:before { content: "\e641"; }
+
+	.icon-zhuanchu:before { content: "\e642"; }
+
+	.icon-tuijian:before { content: "\e600"; }
+
+	.icon-icon--:before { content: "\e71e"; }
+
+	.icon-icon-:before { content: "\e617"; }
+
+	.icon-cart:before { content: "\e6ea"; }
+
+	.icon-jianjie:before { content: "\e601"; }
+
+	.icon-pintuan:before { content: "\e61e"; }
+
+	.icon-gerenzhongxinkaobei:before { content: "\e657"; }
+
+	.icon-saoma-fuben:before { content: "\e627"; }
+
+</style>
+
+<template>
+    <text class="iconfont icon-{{type}}" style="font-size: {{fontSize || 16}}rpx; color: {{color}};"></text>
+</template>
+
+<script>
+
+  import wepy from 'wepy'
+  export default class Icon extends wepy.component {
+    props = {
+      type: {
+        type: [String, Object, Array],
+        coerce: newVal => {
+					console.log('sada',newVal)
+					return newVal
+				}
+      },
+      fontSize: {
+        type: [String],
+        coerce: newVal => newVal
+      },
+      color: {
+        type: [String],
+        coerce: newVal => newVal
+      }
+    }
+    show(data = {}){
+        for(let i in data){
+            this[i] = data[i]
+            this.$apply()
+        }
+    }
+  }
+
+</script>

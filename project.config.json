@@ -1,0 +1,13 @@
+{
+  "description": "a job",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "appid": "	wx04b0446d000398c4",
+  "projectname": "myproject",
+  "miniprogramRoot": "./dist"
+}

@@ -1,0 +1,636 @@
+<style lang="scss">
+    page{
+        width: 100%;
+        height: 100%;
+    }
+    .tangshi{
+        height: 100%;
+        width: 100%;
+        .footer{
+            width: 100%;
+            height: 90rpx;
+            background: #302a2a;
+            position: fixed;
+            bottom: 0;
+            z-index: 3;
+            .goodsCar{
+                width: 115rpx;
+                height: 115rpx;
+                border-radius: 50%;
+                background: #def101;
+                margin-top: -40rpx;
+                margin-left: 20rpx;
+                text-align: center;
+                line-height: 115rpx;
+                float: left;
+            }
+            .total{
+                font-size: 40rpx;
+                color: #fff;
+                line-height: 90rpx;
+                float: left;
+                margin-left: 30rpx;
+            }
+            .order{
+                float: right;
+                background: #15d564;
+                width:26%;
+                text-align:center;
+                color:#fff;
+                font-size:32rpx;
+                height:90rpx;
+                line-height:90rpx;
+            }
+        }
+        .shopcar_tack{
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            position: absolute;
+            top:0;
+            left: 0;
+            z-index: 1;
+        }
+        .shop_car{
+            width: 100%;
+            position: absolute;
+            bottom: 90rpx;
+            left: 0;
+            z-index: 2;
+            padding: 0 30rpx 40rpx 30rpx;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            background: white;
+            height: 60vh;
+            overflow-y: auto;
+            .shop_li{
+                display: flex;
+                padding: 30rpx 0;
+                box-sizing: border-box;
+                border-bottom: 1px solid #ededed;
+                justify-content: space-between;
+                font-size: 30rpx;
+                align-items: center;
+                margin-top: 40rpx;
+                .shop_name{
+                    margin-right: 30rpx;
+                    display: flex;
+                    flex-direction: column;
+                    view:nth-child(1){
+                        font-weight: 600;
+                        margin-bottom: 13rpx;
+                    }
+                    view:nth-child(2){
+                        color: #b9b9b9;
+                        font-size: 20rpx;
+                    }
+                }
+                .shop_tap{
+                    display: flex;
+                    flex-direction: row-reverse;
+                    margin-right: -20rpx;
+                    view{
+                        margin-right: 24rpx;
+                        line-height: 50rpx;
+                    }
+                    view:nth-child(4){
+                        margin-right: 30rpx;
+                        view:nth-child(2){
+                            line-height: 46rpx;
+                        }
+                    }
+                    view:nth-child(2){
+                        line-height: 50rpx;
+                        width: 50rpx;
+                        text-align: center;
+                    }
+                    view:nth-child(1){
+                        width: 50rpx;
+                        height: 50rpx;
+                        border-radius: 50%;
+                        border: 1px solid #5491b0;
+                        color: #fff;
+                        font-weight: 600;
+                        line-height: 46rpx;
+                        text-align: center;
+                        background: #2895f0;
+                    }
+                    view:nth-child(3){
+                        width: 50rpx;
+                        height: 50rpx;
+                        border-radius: 50%;
+                        border: 1px solid #5491b0;
+                        color: #5491b0;
+                        line-height: 46rpx;
+                        text-align: center;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    }
+
+    .smallimg{
+        width: 100rpx;
+        height: 100rpx;
+        border-radius: 50%;
+        position: absolute;
+        background: red;
+        /*top: 189px;*/
+        /*left: 201px;*/
+    }
+    /*.header_nav{*/
+    /*width: 100%;*/
+    /*margin-bottom: 90rpx;*/
+    /*height: 100%;*/
+    /*}*/
+</style>
+<template>
+
+    <view class="tangshi">
+        <view class="header_nav">
+            <scrollNav :ScrollNav.sync="ScrollNav" :num.sync="num"></scrollNav>
+            <scrollView :ScrollView.sync="ScrollView" :Scrollname.sync="Scrollname"></scrollView>
+            <image class="smallimg" wx:if="{{hide_good_box}}"
+                   src="{{smallimg}}"
+                   style='left:{{bus_x}}px;top:{{bus_y}}px'></image>
+        </view>
+        <view class="shopcar_tack" @tap="cliTrack" wx:if="{{shopcar_tack}}"></view>
+
+        <view class="shop_car" wx:if="{{shop_car}}">
+            <repeat for="{{shopCar}}">
+                <view class="shop_li">
+                    <view class="shop_name">
+                        <view>{{item.name}}</view>
+                        <view style="color: #ff0000;" wx:if="{{item.out_support !== 1 && title == '外卖' || item.out_support !== 1 && status}}">
+                            (该菜品不支持外卖)
+                        </view>
+                    </view>
+                    <view class="shop_tap">
+                        <view @tap="plus" data-name="{{item.name}}" data-index="{{index}}">+</view>
+                        <view>{{item.num}}</view>
+                        <view @tap="reduce" data-name="{{item.name}}" data-index="{{index}}">-</view>
+                        <view>￥{{item.price}}</view>
+                    </view>
+                </view>
+            </repeat>
+
+
+        </view>
+        <view class="footer">
+            <view class="goodsCar" @tap="toShopCar">
+                <icon type="gouwuche" color="#000" fontSize="62"></icon>
+            </view>
+            <view class="total">￥{{total}}</view>
+            <view class="order" @tap="confirmOrder">确认下单</view>
+        </view>
+        <toast />
+    </view>
+
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import getExtJson from '../mixins/getExtJson'
+    import ScrollNav from '../components/ScrollNav'
+    import ScrollView from '../components/ScrollView'
+    import Icon from '../components/Icon'
+    import Toast from 'wepy-com-toast'
+
+    export default class Index extends wepy.page {
+
+        components = {
+            scrollNav: ScrollNav,
+            scrollView: ScrollView,
+            icon: Icon,
+            toast: Toast
+        }
+
+        data = {
+            smallimg: '',
+            hide_good_box: false,
+            status: '',
+            ScrollNav: [],
+            category_id: '',
+            ScrollView: {},
+            Scrollname: '',
+            num: '',
+            pageCount: 1,  //商品总页数
+            currentPage: 1,
+            total: '0.00', //总价
+            shopCar: [],
+            car :true,
+            title: '',
+            shopcar_tack: false,   //遮罩层
+            shop_car: false
+        }
+        /*
+        * 商品分类数据请求
+        * */
+        getGoodsList() {
+            wx.request({
+                url: `${this.api_host}/restapi/food-categories`,
+                data: {
+                    config_id : this.config_id
+                },
+                success: (res) => {
+                    this.ScrollNav = res.data.data
+                    this.num = res.data.data[0].id + ''
+                    this.category_id = res.data.data[0].id
+                    this.Scrollname = res.data.data[0].name
+                    this.getGoods()
+                    this.$apply()
+                }
+            })
+        }
+        /*
+        * 商品列表数据请求
+        * */
+        getGoods() {
+            let data = {
+                config_id: this.config_id,
+                page: 1,
+                'per-page': 20
+            }
+
+            if(this.title == '堂食'){
+
+                if(this.search){
+                    data.filter = [
+                        [
+                            'like',
+                            'name',
+                            this.search
+                        ],
+                        [
+                            {
+                                status: '已上架'
+                            }
+                        ]
+                    ]
+                    this.num = ''
+                    this.$apply()
+                }else {
+                    data.filter = [
+                        {
+                            type_id: this.category_id,
+                            status: '已上架'
+                        }
+                    ]
+                }
+            }else if(this.title == '外卖') {
+                data.out_support = 1
+                data.filter = [
+                    {
+                        type_id: this.category_id,
+                        status: '已上架'
+                    }
+                ]
+            }
+            wx.request({
+                url: `${this.api_host}/restapi/foods`,
+                data: data,
+                success: (res) => {
+                    this.pageCount = res.data.data._meta.pageCount
+                    this.ScrollView = []
+                    res.data.data.items.forEach( item => {
+                        if(item.status == '已上架') {
+                            this.ScrollView.push({
+                                name: item.name,
+                                id: item.id,
+                                images: `${this.img_host}${item.images}`,
+                                price: item.price,
+                                container: item.container,
+                                out_support: item.out_support
+                            })
+                        }
+                    })
+                    this.$apply()
+                }
+            })
+        }
+
+        methods = {
+            /*
+            * 跳转到购物车
+            * */
+            toShopCar() {
+                this.shopcar_tack = true
+                this.shop_car = true
+//                this.getAllRects()
+                this.$apply()
+            },
+            /*
+            * 点击遮罩层
+            * */
+            cliTrack(e) {
+                this.shopcar_tack = false
+                this.shop_car = false
+                this.shopCar.forEach( (item, index) => {
+                    if(item.num == 0) {
+                        this.shopCar.splice(index, 1)
+                        wx.setStorageSync('shopCar', this.shopCar)
+                    }
+                })
+                this.$apply()
+            },
+            /*
+            * 确认订单
+            * */
+            confirmOrder() {
+                console.log(this.title, 1)
+                if(!this.title || this.status) {
+                    wx.showModal({
+                        title: '提示',
+                        content: '请选择就餐方式',
+                        cancelText: '外卖',
+                        cancelColor: '#000',
+                        confirmText: '堂食',
+                        confirmColor: '#000',
+                        success: res => {
+                            if (res.confirm) {
+                                wx.navigateTo({url:`order?shopCar=${JSON.stringify(this.shopCar)}&title=堂食`})
+                            } else if (res.cancel) {
+                                let arr = []
+                                this.shopCar.forEach( item => {
+                                    if(item.out_support !== 1) {
+                                        arr.push(item)
+                                    }
+                                })
+                                if(arr.length > 0) {
+                                    this.shopcar_tack = true
+                                    this.shop_car = true
+                                    this.$apply()
+                                } else {
+                                    wx.navigateTo({url:`order?shopCar=${JSON.stringify(this.shopCar)}&title=外卖`})
+                                }
+                            }
+                        }
+                    })
+                    return
+                }
+
+                if(Array.isArray(this.shopCar) && this.shopCar.length >= 1){
+                    if(this.title == '外卖') {
+                        let arr = []
+                        this.shopCar.forEach( item => {
+                            if(item.out_support !== 1) {
+                                arr.push(item)
+                            }
+                        })
+                        if(arr.length > 0) {
+                            this.shopcar_tack = true
+                            this.shop_car = true
+                            this.$apply()
+                        } else {
+                            wx.navigateTo({url:`order?shopCar=${JSON.stringify(this.shopCar)}&title=${this.title}`})
+                        }
+
+                    } else {
+                        wx.navigateTo({url:`order?shopCar=${JSON.stringify(this.shopCar)}&title=${this.title}`})
+                    }
+                }else {
+                    wx.showToast({
+                        title: '您还没选择菜品',
+                        image: '../images/fals.png',
+                        duration: 2000
+                    })
+                }
+
+            },
+            /*
+            * 加
+            * */
+            plus(e){
+                this.shopCar.forEach( item => {
+                    if(item.name === e.currentTarget.dataset.name) {
+                        item.num ++
+                        this.total = (Number(this.total) + Number(item.price)).toFixed(2)
+                        wx.setStorageSync('shopCar', this.shopCar)
+                    }
+                })
+                this.$apply()
+            },
+            /*
+            * 减
+            * */
+            reduce(e) {
+                this.shopCar.forEach( item => {
+                    if(item.name === e.currentTarget.dataset.name) {
+                        if(item.num <= 0 ) {
+                            // 修复数量减到0时删除购物车记录
+                            return
+                        } else {
+                            item.num --
+                            this.total = (Number(this.total) - Number(item.price)).toFixed(2)
+                            if(item.num <= 0 ){
+                                let index = e.currentTarget.dataset.index
+                                this.shopCar.splice(index, 1)
+                                wepy.setStorageSync('shopCar', this.shopCar)
+                                return
+                            }
+                            wx.setStorageSync('shopCar', this.shopCar)
+                        }
+
+                    }
+                })
+                this.$apply()
+            }
+        }
+        events = {
+            /*
+            * ScrollNav组件点击切换商品事件
+            * */
+            change(currentIndex, ScrollName) {
+                this.search = ''
+                this.category_id = currentIndex
+                this.Scrollname = ScrollName
+                this.getGoods()
+                this.currentPage = 1
+                this.$apply()
+            },
+            scrolltolower() {
+                /*
+                * ScrollView组件下拉触底事件
+                * */
+                if(this.currentPage < this.pageCount) {
+                    this.currentPage ++
+                    let data = {
+                        config_id: this.config_id,
+                        page: this.pageCount,
+                        'per-page': 20
+                    }
+                    if(this.title == '堂食') {
+                        if(this.search){
+                            data.filter = [
+                                [
+                                    'like',
+                                    'name',
+                                    this.search
+                                ],
+                                [
+                                    {
+                                        status: '已上架'
+                                    }
+                                ]
+                            ]
+                        }else {
+                            data.filter = [
+                                {
+                                    type_id: this.category_id,
+                                    status: '已上架'
+                                }
+                            ]
+                        }
+                    } else if(this.title == '外卖') {
+                        data.out_support = 1
+                        data.filter = [
+                            {
+                                type_id: this.category_id,
+                                status: '已上架'
+                            }
+                        ]
+                    }
+                    wx.request({
+                        url: `${this.api_host}/restapi/foods`,
+                        data: data,
+                        success: (res) => {
+                            this.pageCount = res.data.data._meta.pageCount
+                            res.data.data.items.forEach((item) => {
+                                this.ScrollView.push({
+                                    name: item.name,
+                                    id: item.id,
+                                    images: `${this.img_host}${item.images}`,
+                                    price: item.price,
+                                    container: item.container,
+                                    out_support: item.out_support
+                                })
+                            })
+                            this.$apply()
+                        }
+                    })
+                }
+            },
+            addToShopCar(name, price, img, id, container, out_support,e) {
+                this.smallimg = img
+                this.finger = {}; var topPoint = {};
+                this.finger['x'] = e.touches["0"].clientX -30;//点击的位置
+                this.finger['y'] = e.touches["0"].clientY -30;
+
+                if (this.finger['y'] < this.busPos['y']) {
+                    topPoint['y'] = this.finger['y'] - 150;
+                } else {
+                    topPoint['y'] = this.busPos['y'] - 150;
+                }
+                topPoint['x'] = Math.abs(this.finger['x'] - this.busPos['x']) / 2;
+
+                if (this.finger['x'] > this.busPos['x']) {
+                    topPoint['x'] = (this.finger['x'] - this.busPos['x']) / 2 + this.busPos['x'];
+                } else {//
+                    topPoint['x'] = (this.busPos['x'] - this.finger['x']) / 2 + this.finger['x'];
+                }
+
+                topPoint['x'] = this.busPos['x'] + 80
+                this.linePos = this.$parent.globalData.bezier([this.finger, topPoint, this.busPos], 30);
+
+                this.linePos = this.$parent.globalData.bezier([this.busPos, topPoint, this.finger], 30);
+                this.startAnimation(e);
+                /*
+                * 添加到购物车  计算总价
+                * */
+                this.total = (Number(this.total) + Number(price)).toFixed(2)
+                for(let i = 0, len = this.shopCar.length; i < len; i++) {
+                    if(this.shopCar[i].name == name) {
+                        this.shopCar[i].num ++
+                        wx.setStorageSync('shopCar', this.shopCar)
+                        return
+                    }
+                }
+                this.shopCar.push(
+                    {
+                        name: name,
+                        price: price,
+                        img: img,
+                        num: 1,
+                        id: id,
+                        container: container,
+                        out_support: out_support
+                    }
+                )
+                wx.setStorageSync('shopCar', this.shopCar)
+
+                this.$apply()
+            },
+            skipGoosdDtails(id, titleName) {
+                wx.navigateTo({url:`shopDetails?id=${id}&titleName=${titleName}&title=${this.title}`})
+            }
+        }
+        startAnimation(e){
+            var index = 0, that = this,
+                bezier_points = that.linePos['bezier_points'];
+
+            clearInterval(that.timer);
+            this.hide_good_box = true
+
+            this.setData({
+                bus_x: that.finger['x'],
+                bus_y: that.finger['y']
+            })
+            var len = bezier_points.length;
+            index = len
+            this.timer = setInterval(function () {
+                index--;
+                that.setData({
+                    bus_x: bezier_points[index]['x'],
+                    bus_y: bezier_points[index]['y']
+                })
+                if (index < 1) {
+                    clearInterval(that.timer);
+                    that.hide_good_box = false
+                    that.$apply()
+                }
+            }, 40);
+            this.$apply()
+        }
+        onShareAppMessage() {
+
+        }
+        onLoad(option) {
+            this.search = option.search
+            this.status = option.status
+            if(option.q) {
+                console.log(option.q, 88    )    //解码
+                console.log(decodeURIComponent(option.q), 9999)
+                let urlArr = decodeURIComponent(option.q).split('?')[1]
+                let tableId = urlArr.match(/table_id=[0-9]{1,}/)[0].split('=')[1]
+                let tabname = urlArr.match(/table_name=[\s\S]*/)[0].split('=')[1]
+                this.$parent.globalData.tableId = tableId
+                this.$parent.globalData.tableId = tabname
+                this.title = '堂食'
+            } else {
+                this.$parent.globalData.tableId = ''
+            }
+            this.title = option.title
+            getExtJson.call(this)
+            wx.setNavigationBarTitle({
+                title: option.title
+            })
+            this.getGoodsList()
+            this.busPos = {};
+            this.busPos['x'] = 10;//购物车的位置
+            this.busPos['y'] = this.$parent.globalData.hh ;
+            this.$apply()
+        }
+        onShow() {
+            if(wx.getStorageSync('shopCar')) {
+                this.shopCar = wx.getStorageSync('shopCar')
+                this.total = 0
+                this.shopCar.forEach((item) => {
+                    this.total = (Number(this.total) + Number(item.price) * Number(item.num)).toFixed(2)
+                })
+                this.$apply()
+            }
+        }
+    }
+</script>

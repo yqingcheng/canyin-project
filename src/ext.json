@@ -1,0 +1,93 @@
+{
+  "extEnable": true,
+  "extAppid": "wx8b963b9cfc19aabf",
+  "directCommit": false,
+  "ext": {
+    "config_id": 634,
+    "merchant_id": 130,
+    "api_host": "https://www.xiaoniren.cn",
+    "img_host": "https://www.xiaoniren.cn",
+    "style": "#fc3e62",
+    "menu": [
+      {
+        "name": "堂食",
+        "icon": "/upload/wechatpage/icon/201801/15166940712843.png",
+        "bgColor": ""
+      },
+      {
+        "name": "外卖",
+        "icon": "/upload/wechatpage/icon/201801/15166940532650.png",
+        "bgColor": ""
+      },
+      {
+        "name": "在线预订",
+        "icon": "/img/weapp_img/menu_icon/icon_gbook.png",
+        "bgColor": ""
+      },
+      {
+        "name": "我的订单",
+        "icon": "/img/weapp_img/menu_icon/icon_map.png",
+        "bgColor": ""
+      },
+      {
+        "name": "我的收藏",
+        "icon": "/img/weapp_img/menu_icon/icon_map.png",
+        "bgColor": ""
+      },
+      {
+        "name": "个人中心",
+        "icon": "/img/weapp_img/menu_icon/icon_map.png",
+        "bgColor": ""
+      }
+    ],
+    "flag": [
+      {
+        "tag": "\u6807\u98980",
+        "flag": 1,
+        "num": 5,
+        "style": ["long"]
+      },
+      {
+        "tag": "\u6807\u98981",
+        "flag": 2,
+        "num": 4,
+        "style": []
+      },
+      {
+        "tag": "\u6807\u98982",
+        "flag": 3,
+        "num": 6,
+        "style": [
+          "long",
+          "long"
+        ]
+      },
+      {
+        "tag": "\u6807\u98983",
+        "flag": 4,
+        "num": 4,
+        "style": [
+          "long",
+          "long",
+          "long",
+          "long"
+        ]
+      }
+    ],
+
+    "router": {
+      "category": "categorySearch",
+      "categoryDetail": "categoryInfoTopScroll",
+      "goodsInfo": "",
+      "home": "index"
+    }
+  },
+  "extPages": {},
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "首頁",
+    "navigationBarTextStyle": "black"
+  },
+  "networkTimeout": {}
+}

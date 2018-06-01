@@ -1,0 +1,367 @@
+<style lang="scss">
+    @import '../mixins/wxParse/wxParse.wxss';
+    .shopDetails{
+        .carousel{
+            width: 100%;
+            height: 560rpx;
+        }
+        .goods_detail{
+            padding: 20rpx;
+            box-sizing: border-box;
+            border-bottom: 1rpx solid #ececec;
+            .goods_name{
+                font-size: 30rpx;
+            }
+            .goods_status{
+                font-size: 20rpx;
+                color: #999999;
+                display: flex;
+                flex-direction: row;
+                line-height: 55rpx;
+                view:nth-child(1){
+                    margin-right: 105rpx;
+                }
+            }
+            .goosd_price{
+                color: #ea3613;
+                font-size: 38rpx;
+                line-height: 70rpx;
+            }
+        }
+        .seletion{
+            padding: 20rpx 20rpx 20rpx 20rpx;
+            margin-bottom: 90rpx;
+            box-sizing: border-box;
+            border-bottom: 15px solid #ececec;
+            font-size: 27rpx;
+            .essay_title{
+                line-height: 60rpx;
+                color: #999999;
+            }
+            .essay{
+                line-height: 40rpx;
+                color: #656565;
+                text-indent: 40rpx;
+            }
+        }
+        .footer{
+            width: 100%;
+            height: 90rpx;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background: white;
+            z-index: 999;
+            .total{
+                float: right;
+                width: 74%;
+                display: flex;
+                height: 100%;
+                .block{
+                    flex: 1 1 50%;
+                    border-top: 1px solid #ececec;
+                    border-right: 1px solid #ececec;
+                    margin-right: -1px;
+                    height: 100%;
+                    color: #373737;
+                    font-size: 27rpx;
+                    line-height: 90rpx;
+                    text-align: center;
+                    display: flex;
+                    justify-content: center;
+                }
+                .icon_font{
+                    margin-left: 20rpx;
+                }
+            }
+            &_order{
+                float: right;
+                width:26%;
+                text-align:center;
+                color:#fff;
+                font-size:32rpx;
+                height:90rpx;
+                line-height:90rpx;
+                background: #fe0000;
+            }
+        }
+    }
+</style>
+
+<template>
+    <view class="shopDetails">
+        <import src="../mixins/wxParse/wxParse.wxml"></import>
+        <view class="carousel">
+            <carousel :carouselConfig.sync="carouselConfig"></carousel>
+        </view>
+        <view class="goods_detail">
+            <view class="goods_name">{{goodsDetails.name}}</view>
+            <view class="goods_status">
+                <view>月售 {{goodsDetails.sales_plus}}</view>
+                <view>库存 {{goodsDetails.inventory}}</view>
+            </view>
+            <view class="goosd_price">￥{{goodsDetails.price}}</view>
+        </view>
+        <view class="seletion">
+            <view class="essay_title">商品信息</view>
+            <view class="essay">
+                <template is="wxParse" data="{{wxParseData: detailEle.nodes}}"></template>
+            </view>
+        </view>
+        <view class="footer">
+            <view class="footer_order" @tap="buyGoods">购买</view>
+            <view class="total">
+                <view class="block" @tap="addLike">
+                    <icon1 type="jushoucang" :color.sync="shoucang" fontSize="33"></icon1>
+                    <view class="icon_font">{{like}}</view>
+                </view>
+                <view class="block" @tap="addToCar" >
+                    <icon2 type="gouwuche" color="#373737" fontSize="33"></icon2>
+                    <view class="icon_font">加入购物车</view>
+                </view>
+            </view>
+        </view>
+        <modal></modal>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import getExtJson from '../mixins/getExtJson'
+    import Carousel from 'xnr-swiper'
+    import Icon from '../components/Icon'
+    import Modal from '../components/Modal'
+    import Toast from 'wepy-com-toast'
+    import wxParse from '../mixins/wxParse/wxParse'
+
+    export default class ShopDetails extends wepy.page{
+        components = {
+            carousel: Carousel,
+            icon1: Icon,
+            icon2: Icon,
+            modal: Modal,
+            toast: Toast
+        }
+        data = {
+            goodsId: '',
+            carouselConfig: {
+                autoplay: true,
+                interval: 3000,
+                duration: 1000,
+                loop: true,
+                dots: true,
+                dotsColor: "#fff",
+                dotsActiveColor: "rgba(0,0,0,.5)",
+            },
+            goodsDetails: {},
+            shopCar: [],
+            title: '',
+            shoucang: '#373737',
+            like: '添加喜欢'
+        }
+        getGoodsDetails() {
+            wx.request({
+                url: `${this.api_host}/restapi/foods/${this.goodsId}`,
+                method: 'get',
+                data: {
+                    config_id: this.config_id
+                },
+                success: (res) => {
+
+                    this.shopCar[0] = {
+                        name: res.data.data.name,
+                        price: res.data.data.price,
+                        img: `${this.img_host}${res.data.data.images}`,
+                        num: 1,
+                        id: res.data.data.id,
+                        container: res.data.data.container,
+                        out_support: res.data.data.out_support
+                    }
+                    this.goodsDetails = res.data.data
+                    wxParse.wxParse('detailEle', 'html', res.data.data.detail, this)
+                    this.carouselConfig.imgUrls = res.data.data.imgs.map( item => `${this.img_host}${item}`)
+                    this.$apply()
+
+                    if(wx.getStorageSync('mytracks')) {
+                        let mytracks = wx.getStorageSync('mytracks')
+                        for(let i = 0, len = mytracks.length; i < len; i++){
+
+                            if(mytracks[i].name == this.shopCar[0].name) {
+
+                                return
+                            }
+                        }
+                        mytracks.push(this.shopCar[0])
+                        wx.setStorageSync('mytracks', mytracks)
+
+                    } else {
+                        wx.setStorageSync('mytracks', this.shopCar)
+                    }
+
+                }
+            })
+        }
+        methods = {
+            /*
+            * 商品购买
+            * */
+            buyGoods(){
+                if(!this.title){
+                    wx.showModal({
+                        title: '提示',
+                        content: '请选择就餐方式',
+                        cancelText: '外卖',
+                        cancelColor: '#000',
+                        confirmText: '堂食',
+                        confirmColor: '#000',
+                        success: res => {
+                            if (res.confirm) {
+                                wx.navigateTo({url:`order?shopCar=${JSON.stringify(this.shopCar)}&title=堂食`})
+                            } else if (res.cancel) {
+                                if(this.shopCar[0].out_support == 1) {
+                                    wx.navigateTo({url:`order?shopCar=${JSON.stringify(this.shopCar)}&title=外卖`})
+                                } else {
+                                    wx.showToast({
+                                        title: '该菜不支持外卖',
+                                        image: '../images/fals.png',
+                                        duration: 2000
+                                    })
+                                }
+                            }
+                        }
+                    })
+                } else {
+                    wx.navigateTo({url:`order?shopCar=${JSON.stringify(this.shopCar)}&title=${this.title}`})
+                }
+
+
+            },
+            /*
+            * 加入购物车
+            * */
+            addToCar(e) {
+                    if(wx.getStorageSync('shopCar')) {
+                        let shopCars = wx.getStorageSync('shopCar')
+                        for(let i = 0, len = shopCars.length; i < len; i++) {
+                            if(shopCars[i].name == this.shopCar[0].name) {
+                                shopCars[i].num ++
+                                wx.setStorageSync('shopCar', shopCars)
+                                wx.showToast({
+                                    title: '已加入购物车',
+                                    icon: 'true',
+                                    duration: 1000,
+                                    mask: true
+                                })
+                                return
+                            }
+                        }
+                        shopCars.push(this.shopCar[0])
+                        wx.setStorageSync('shopCar', shopCars)
+                        this.$apply()
+                    } else {
+                        wx.setStorageSync('shopCar', this.shopCar)
+                    }
+
+
+
+                wx.showToast({
+                    title: '已加入购物车',
+                    icon: 'true',
+                    duration: 1000,
+                    mask: true
+                })
+            },
+            /*
+            * 添加喜欢
+            * */
+            addLike(e){
+                if(wx.getStorageSync('openid')) {
+                    wx.request({
+                        url: `${this.api_host}/restapi/productlikes`,
+                        method: 'POST',
+                        data: {
+                            config_id: this.config_id,
+                            type: '餐饮',
+                            product_id: this.goodsId,
+                            openid: wx.getStorageSync('openid')
+                        },
+                        success: (res) => {
+                            wx.showToast({
+                                title: '已加入收藏',
+                                icon: 'true',
+                                duration: 1000,
+                                mask: true
+                            })
+                        }
+                    })
+                } else {
+                    this.$invoke('modal', 'show', {     //没有openid让用户授权
+                        content: '您还没有授权登录',
+                        specialType: 'getUserInfo',
+                        specialText: '登录',
+                        showCancel: true,
+                        success: (res) => {
+                            if(res.confirm) {
+                                if(res.data.userInfo){
+                                    this.$parent.getUserInfo()
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }
+        /*
+        * 读取收藏列表
+        * */
+        getCollection() {
+//            if(wx.getStorageSync('openid')) {
+//                wx.request({
+//                    url: `${this.api_host}/restapi/productlikes`,
+//                    method: 'GET',
+//                    data: {
+//                        config_id: this.config_id,
+//                        openid: wx.getStorageSync('openid'),
+//                        type: '餐饮'
+//                    },
+//                    success: (res) => {
+//                        res.data.data.forEach( item => {
+//                            console.log(item.product.id)
+//                            if(item.product.id == this.goodsId) {
+//                                this.like = '取消喜欢'
+//                                this.shoucang = 'red'
+//                            }
+//                        })
+//                        this.$apply()
+//                    }
+//                })
+//            }
+        }
+        onShareAppMessage() {
+
+        }
+        onLoad(option) {
+            getExtJson.call(this)
+            this.title = option.title
+            if(option.status) {
+                this.title = ''
+            }
+
+            this.goodsId = option.id
+            this.getGoodsDetails()
+            wx.setNavigationBarTitle({
+                title: option.titleName
+            })
+            this.getCollection()    //收藏
+            /*
+            * 通过ext.json传入的swiper 数据 修改轮播图的样式
+            * */
+            if(this.swiper) {
+                for(let i in this.swiper) {
+                    this.carouselConfig[i] = this.swiper[i]
+                }
+            }
+            this.$apply()
+        }
+    }
+</script>

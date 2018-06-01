@@ -1,0 +1,112 @@
+<style lang="scss">
+    .ScrollView{
+        position: fixed;
+        /*height: 100%;*/
+        top: 0;
+        right: 0;
+        width: 570rpx;
+        bottom: 90rpx;
+        padding: 45rpx 0 0 0 ;
+        box-sizing: border-box;
+        .title{
+            font-size: 28rpx;
+            line-height: 25rpx;
+            margin: 0 0 23rpx 0;
+        }
+        &_block{
+            width: 265rpx;
+            height: 325rpx;
+            float: left;
+            margin: 0 20rpx 20rpx 0;
+            position: relative;
+            .goods_img{
+                width: 100%;
+                height: 200rpx;
+            }
+            .goods_name{
+                font-size: 28rpx;
+                line-height: 54rpx;
+                margin-left: 10rpx;
+                overflow : hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+            }
+            .goods_price{
+                font-size: 30rpx;
+                color: #ff2f30;
+            }
+            .goods_but{
+                width: 50rpx;
+                height: 50rpx;
+                border-radius: 50rpx;
+                position: absolute;
+                right: 0;
+                bottom: 10rpx;
+            }
+        }
+    }
+</style>
+
+<template>
+    <scroll-view scroll-y="true" class="ScrollView" @scrolltolower="scrolltolower">
+        <view class="title">{{Scrollname}}</view>
+        <view class="ScrollView_block" wx:for="{{ScrollView}}" wx:key="{{index}}" @tap="skipGoosdDtails" data-name="{{item.name}}" data-id="{{item.id}}">
+            <image class="goods_img" src="{{item.images}}"></image>
+            <!--<view class="oh"></view>-->
+            <view class="goods_name">{{item.name}}</view>
+            <view class="goods_price">￥{{item.price}}</view>
+            <image src="../images/add1.png" class="goods_but" catchtap="addToShopCar"
+                  data-img="{{item.images}}"
+                  data-name="{{item.name}}"
+                  data-price="{{item.price}}"
+                  data-id="{{item.id}}"
+                  data-out_support="{{item.out_support}}"
+                  data-container="{{item.container}}">
+
+            </image>
+        </view>
+    </scroll-view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import getExtJson from '../mixins/getExtJson'
+    export default class ScrollView extends wepy.component{
+        props = {
+            ScrollView: {},
+            Scrollname: {}
+        }
+        data = {
+        }
+        methods = {
+            scrolltolower() {
+                /*
+                * 父组件触发 下拉触底事件
+                * */
+                this.$emit('scrolltolower')
+            },
+            addToShopCar(e) {
+                /*
+                * 父组件触发添加到购物车事件
+                * */
+                this.$emit('addToShopCar', e.currentTarget.dataset.name,
+                    e.currentTarget.dataset.price,
+                    e.currentTarget.dataset.img,
+                    e.currentTarget.dataset.id,
+                    e.currentTarget.dataset.container,
+                    e.currentTarget.dataset.out_support,
+                    e
+                )
+            },
+            /*
+            * 跳转商品详情
+            * */
+            skipGoosdDtails(e) {
+                this.$emit('skipGoosdDtails', e.currentTarget.dataset.id, e.currentTarget.dataset.name)
+            }
+        }
+
+    }
+</script>

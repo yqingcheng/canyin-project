@@ -1,0 +1,191 @@
+<style lang="scss">
+    
+    .search{
+        &_wrap{
+
+        }
+        &_input{
+            $height: 86rpx;
+            height: $height;
+            background-color: #f0f0f0;
+            position: relative;
+            overflow: hidden;
+            font-size: 24rpx;
+            i{
+                width: 24rpx;
+                height: 24rpx;
+                font-size: 24rpx;
+                margin-top: -16rpx;
+                position: absolute;
+                left: 6%; top: 50%;
+            }
+            input {
+                width: 90%;
+                height: $height - 20;
+                margin: 8rpx auto;
+                
+                padding-left: 1.5em;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                background-color: #fff;
+                border-radius: 8rpx;
+            }
+        }
+        &_words{
+
+        }
+        &_title{
+            line-height: 58rpx;
+            padding: 0 30rpx;
+            font-size: 28rpx;
+            overflow: hidden;
+            .tit{
+                float: left;
+            }
+            .del{
+                width: 48rpx;
+                height: 48rpx;
+                line-height: 48rpx;
+                margin-top: 5rpx;
+                font-size: 24rpx;
+                text-align: center;
+                color: #999;
+                border-radius: 50%;
+                background: #dedede;
+                float: right;
+            }
+        }
+        &_text_cont{
+            display: flex;
+            padding: 12rpx 30rpx 0;
+            flex-wrap: wrap;
+            text{
+                padding: 8rpx 20rpx;
+                border: 1px solid #dedede;
+                font-size: 24rpx;
+                margin-right: 12rpx;
+                margin-bottom: 12rpx;
+                border-radius: 8rpx;
+            }
+        }
+    }
+
+</style>
+
+<template>
+    <view class="search_wrap">
+        <view class="search_input">
+            <i class="iconfont icon-search"></i>
+            <input name="text" type="text" placeholder="{{placeholder}}" confirm-type="search" value="" auto-focus @blur="inputBlur" @confirm="searchSubmit" />
+            
+            
+        </view>
+
+        <repeat for="{{words}}" item="item">
+            <view calss="search_words">
+                <view class="search_title">
+                    <text class="tit">{{item.title}}:</text> 
+                    <text class="del iconfont icon-shanchu" wx:if="{{item.name == 'history'}}" @tap="del"></text>
+                </view>
+                <view class="search_text_cont">
+                    
+                    <repeat for="{{item.words}}" item="i" >
+                        <text data-name="{{i}}" @tap="itemWordsClick">{{i}}</text>
+                    </repeat>
+
+                </view> 
+            </view>
+
+        </repeat>
+
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import getExtJson from '../mixins/getExtJson'
+
+    export default class Search extends wepy.page{
+        config = {
+            "navigationBarTitleText": "搜索"
+        }
+        data = {
+            placeholder: '请输入关键字',
+            words: [
+                {
+                    title: '热门搜索',
+                    name: 'hot',
+                    words: [
+//                        '苹果',
+//                        '香蕉',
+//                        '香水梨',
+//                        '椰子',
+//                        '甘蔗',
+//                        '菠萝',
+//                        '冬枣'
+                    ]
+                },
+                {
+                    title: '历史搜索',
+                    name: 'history',
+                    words: [
+
+                    ]
+                }
+            ]
+        }
+        methods = {
+            itemWordsClick(e){
+                wx.navigateTo({url: `goods?search=${e.currentTarget.dataset.name}&title=堂食&status=1`})
+            },
+            del(){
+                wepy.removeStorageSync('searchHistory')
+                this.words[1].words = []
+                this.$apply()
+            },
+            inputBlur(e){
+                // 暂时没有用
+            },
+            searchSubmit(e){
+                let val = e.detail.value
+                let searchHistory = wepy.getStorageSync('searchHistory') || []
+                if(val){
+                    for(let i = 0, I = searchHistory.length; i < I; i++)
+                        if(searchHistory[i] == val) searchHistory.splice(i, 1)
+
+                    searchHistory.unshift(val)
+                    this.words[1].words = searchHistory
+                    wepy.setStorageSync('searchHistory', searchHistory)
+                    this.$apply()
+                    wx.navigateTo({url: `goods?search=${val}&title=堂食&status=1`})
+                }
+
+
+            }
+        }
+        getSearch() {
+            wx.request({
+                url: `${this.api_host}/restapi/repast-product-search-counts`,
+                data: {
+                    config_id : this.config_id
+                },
+                success: (res) => {
+                    this.words[0].words = res.data.data.items
+                    this.$apply()
+                }
+            })
+        }
+        onShareAppMessage() {
+
+        }
+        onLoad(){
+            getExtJson.call(this)
+            this.words[1].words = wepy.getStorageSync('searchHistory')
+            this.getSearch()
+            this.$apply()
+        }
+    }
+
+</script>
+
+

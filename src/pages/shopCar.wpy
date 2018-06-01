@@ -1,0 +1,176 @@
+<style lang="scss">
+    .shopcar{
+        padding: 0 18rpx 100rpx 18rpx;
+        box-sizing: border-box;
+        .shop{
+            width: 100%;
+            height: 150rpx;
+            border-top: 1px solid #f3f3f3;
+            display: flex;
+            align-items: center;
+            position: relative;
+            &_block{
+                display: flex;
+                flex-direction: row;
+                image{
+                    width: 102rpx;
+                    height: 102rpx;
+                    display: block;
+                }
+                .shop_name{
+                    font-size: 33rpx;
+                    margin-left: 18rpx;
+                    line-height: 50rpx;
+                    .num{
+                        color: #9c9c9c;
+                    }
+                }
+            }
+            .price{
+                position: absolute;
+                right: 0;
+                bottom: 25rpx;
+                color: #e7491c;
+                font-size: 33rpx;
+                font-weight: 600;
+            }
+        }
+        /*.canhe{*/
+            /*display: flex;*/
+            /*justify-content: space-between;*/
+            /*align-items: center;*/
+            /*width: 100%;*/
+            /*height: 85rpx;*/
+            /*font-size: 33rpx;*/
+            /*border-top: 1px solid #f3f3f3;*/
+            /*border-bottom: 1px solid #f3f3f3;*/
+            /*.price{*/
+                /*color: #e7491c;*/
+                /*font-weight: 600;*/
+
+            /*}*/
+        /*}*/
+        .footer{
+            width: 100%;
+            height: 90rpx;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            .total{
+                float: right;
+                margin-right: 37rpx;
+                line-height: 90rpx;
+                font-size: 28rpx;
+                .all{
+                    margin-right: 20rpx;
+                    float: left;
+                }
+                .total_price{
+                    color: #e7491c;
+                    float: left;
+                }
+            }
+            .order{
+                float: right;
+                width:26%;
+                text-align:center;
+                color:#fff;
+                font-size:32rpx;
+                height:90rpx;
+                line-height:90rpx;
+                background: #00d557;
+            }
+        }
+    }
+</style>
+
+<template>
+    <view class="shopcar">
+
+        <view class="shop" wx:for="{{shopCar}}" wx:key="{{index}}">
+            <view class="shop_block">
+                <image src="{{item.img}}" mode="scleToFill"></image>
+                <view class="shop_name">
+                    <view>{{item.name}}</view>
+                    <view class="num">x{{item.num}}</view>
+                </view>
+            </view>
+            <view class="price">
+                ￥{{item.price}}
+            </view>
+        </view>
+
+        <abnor
+            wx:if="{{shopCar.length > 0 ? false : true}}"
+            type="CART"
+            button="去逛逛"
+            title="口袋还是空的哦~"
+            @abnortap.user="abnortap"
+        ></abnor>
+
+        <!--<view class="canhe">-->
+            <!--<view>餐盒</view>-->
+            <!--<view class="price">￥{{canhePrice}}</view>-->
+        <!--</view>-->
+
+        <view class="footer">
+            <view class="order" @tap="confirmOrder">去结算</view>
+            <view class="total">
+                <view class="all">合计</view>
+                <view class="total_price">{{total}}</view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import getExtJson from '../mixins/getExtJson'
+    import Abnor from 'xnr-abnor'
+
+    export default class ShopCar extends wepy.page{
+        components = {
+            abnor: Abnor
+        }
+        config = {
+            navigationBarTitleText: '购物车'
+        }
+        data = {
+            shopCar: [],
+            canhePrice: 0,
+            total: ''
+        }
+        methods = {
+            confirmOrder() {
+                wx.navigateTo({url:`order?shopCar=${JSON.stringify(this.shopCar)}&title=${this.title}`})
+            },
+            abnortap(e){
+                wx.reLaunch({
+                    url: `index`,
+                    fail: res => {
+                        wx.switchTab({
+                            url: `index`
+                        })
+                    }
+                })
+            }
+        }
+        onShareAppMessage() {
+
+        }
+        onLoad(option) {
+            getExtJson.call(this)
+            this.title = option.title
+                if(wx.getStorageSync('shopCar')) {
+                    this.shopCar = wx.getStorageSync('shopCar')
+                    this.shopCar.forEach((item) => {
+                        item.img = `${item.img}`
+                        this.total = (Number(this.total) + Number(item.price) * Number(item.num)).toFixed(2)
+                    })
+                }
+
+            this.total = (Number(this.total) + Number(this.canhePrice)).toFixed(2)
+            this.$apply()
+        }
+    }
+</script>
